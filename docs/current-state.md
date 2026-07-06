@@ -42,6 +42,25 @@ Updated: 2026-07-06 (initial build session, Claude Fable)
 - Deploy note: `git push` must be run from PowerShell on Brian's machine
   (Bash tool can't run credential helpers).
 
+## One-click cart fill — VERIFIED end-to-end (2026-07-06)
+
+- `addAllToCart()` in app.js: same-origin only. Per plan line: fetch
+  `/store/product/<slug>`, lift the `theme.add-product-button` component's
+  `wire:snapshot`, POST `/livewire/update` with qty stacked `addToCart(id)`
+  calls + CSRF from `#csrfToken`. One POST per product carries full qty
+  (verified: 2 stacked calls -> cart line (2)).
+- Verified live on parkviewfamilyfarm.com with Brian's signed-in session:
+  button filled cart and redirected to /cart. Signed-out flow verified too
+  (friendly message; GrazeCart customer sessions expire aggressively).
+- `embed.js`: two-line paste for a GrazeCart custom page
+  (`<div id="pvf-order-planner"></div>` + script tag) pulls markup/styles/
+  logic from GitHub Pages; site header unaffected; planner looks native.
+- On github.io the button stays hidden (link-list fallback).
+- Fragility note: this rides GrazeCart's internal Livewire mechanism —
+  a platform update could break the button; fallback is the link list.
+- NOT YET DONE: the actual GrazeCart page doesn't exist. Next step is
+  creating it in admin (Brian approval), then linking it in nav/emails.
+
 ## Open items
 
 - Not yet linked from parkviewfamilyfarm.com or announced to customers.
