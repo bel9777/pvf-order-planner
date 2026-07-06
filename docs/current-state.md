@@ -23,6 +23,15 @@ Updated: 2026-07-06 (initial build session, Claude Fable)
 - Freezer bundles, hog deposit, and Farm Supporter Program are excluded
   from meal math (`group: "other"`).
 
+## Post-launch tweaks (2026-07-06, same day)
+
+- Dinners question reframed after Brian's test: it now asks for dinners
+  built around farm meat, not all home cooking ("Pasta night and leftovers
+  night don't need us"), default 3/week. Brian's $731 test build was correct
+  math but assumed farm meat at every home dinner.
+- Deploy note: `git push` must be run from PowerShell on Brian's machine
+  (Bash tool can't run credential helpers).
+
 ## Open items
 
 - Not yet linked from parkviewfamilyfarm.com or announced to customers.
