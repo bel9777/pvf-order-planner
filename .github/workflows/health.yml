@@ -31,6 +31,7 @@ jobs:
         env:
           PVF_SIMULATE_FAILURE: ${{ inputs.simulate_failure == true && '1' || '' }}
         run: |
+          set -o pipefail
           python scraper/health_check.py | tee health_report.md
 
       - name: Open or update alert issue on failure
