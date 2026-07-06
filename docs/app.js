@@ -139,7 +139,7 @@ const state = {
   zone: "rochester",
   adults: 2,
   kids: 2,
-  dinners: 4,
+  dinners: 3,
   breakfasts: 2,
   eggDozens: 1,
   leftovers: true,

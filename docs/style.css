@@ -52,6 +52,7 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
   margin: 16px 0;
 }
 .card h2 { font-size: 1.2rem; margin: 0 0 14px; }
+.card .hint { color: var(--asphalt); font-size: 0.9rem; margin: -8px 0 14px; }
 
 .stepnum {
   display: inline-flex;
