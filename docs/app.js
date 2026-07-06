@@ -324,6 +324,8 @@ function renderResults(scroll = false) {
     `Order by ${fmtDay(next.deadline)}, 11:59 PM. We pack your order Friday and it rides out Saturday morning.`;
   $("#howto-deadline").textContent =
     `Finish checkout by ${fmtDay(next.deadline)} to make the ${fmtShort(next.delivery)} route.`;
+  $("#howto-oneclick").textContent =
+    `One tap puts your whole list in the cart. Then check out by ${fmtDay(next.deadline)} to make the ${fmtShort(next.delivery)} delivery.`;
 
   // Sections
   const bySection = new Map();
@@ -648,7 +650,11 @@ function wire() {
   });
 
   if (CAN_CART) {
+    // On the farm site one tap does the whole job; the manual walk-through
+    // and store link are the github.io fallback, not needed here.
     $("#add-all-btn").hidden = false;
+    $("#howto-oneclick").hidden = false;
+    $("#howto-manual").hidden = true;
     $("#howto-store-link").hidden = true;
     $("#add-all-btn").addEventListener("click", addAllToCart);
   }

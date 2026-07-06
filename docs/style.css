@@ -3,11 +3,14 @@
    butcher paper / kraft / board black, PVF orange as the single accent. */
 
 :root {
+  /* When embedded on parkviewfamilyfarm.com these resolve to the GrazeCart
+     theme's own tokens (RGB triplets in theme-variables.css), so the tool
+     follows the site brand automatically. The fallbacks serve github.io. */
   --paper: #F7F4EC;
-  --board: #1E1E1C;
+  --board: rgb(var(--text-color, 30 30 28));
   --kraft: #C8A265;
   --kraft-light: #E8DCC0;
-  --orange: #F08A24;
+  --orange: rgb(var(--action-color, 240 138 36));
   --asphalt: #6E6A63;
   --white: #FFFFFF;
   --ok: #3D7A46;
@@ -15,12 +18,19 @@
 
 * { box-sizing: border-box; }
 
-body {
+/* Standalone page only — the embedded page keeps the site's background. */
+body:not(.pvf-embedded) {
   margin: 0;
   background: var(--paper);
   color: var(--board);
   font-family: 'Hind', system-ui, sans-serif;
   font-size: 16px;
+  line-height: 1.5;
+}
+
+#pvf-order-planner {
+  color: var(--board);
+  font-family: var(--body-font-family, 'Hind'), system-ui, sans-serif;
   line-height: 1.5;
 }
 
@@ -150,9 +160,11 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
 /* Build button */
 .build-row { text-align: center; margin: 22px 0; }
 .btn-primary {
-  background: var(--orange);
-  color: var(--white);
-  border: none;
+  /* !important: the GrazeCart theme styles generic buttons and wins
+     otherwise — these turned slate blue on the embedded page without it. */
+  background: var(--orange) !important;
+  color: var(--white) !important;
+  border: none !important;
   border-radius: 8px;
   padding: 14px 34px;
   font-family: inherit;
@@ -163,6 +175,7 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
   display: inline-block;
 }
 .btn-primary:hover { filter: brightness(0.95); }
+.btn-primary:disabled { opacity: 0.75; cursor: default; }
 .btn-primary--wide { width: 100%; text-align: center; margin-top: 10px; }
 
 /* Results */
@@ -281,8 +294,9 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
 .delivery-status--ok { color: var(--ok); }
 .delivery-status--warn { color: var(--orange); }
 
-.card--howto ol { margin: 0 0 6px; padding-left: 20px; }
+.card--howto ol { margin: 0 0 6px; padding-left: 20px; list-style: decimal; }
 .card--howto li { margin: 6px 0; }
+.howto-line { color: var(--asphalt); margin: 12px 2px 2px; }
 
 .fineprint { color: var(--asphalt); font-size: 0.8rem; margin: 10px 0 0; }
 

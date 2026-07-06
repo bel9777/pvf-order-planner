@@ -14,6 +14,7 @@
   const mount = document.getElementById("pvf-order-planner");
   if (!mount || mount.dataset.loaded) return;
   mount.dataset.loaded = "1";
+  document.body.classList.add("pvf-embedded"); // scope standalone-only styles off
 
   if (!document.querySelector(`link[href="${BASE}style.css"]`)) {
     const link = document.createElement("link");
