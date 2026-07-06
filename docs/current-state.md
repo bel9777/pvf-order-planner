@@ -71,6 +71,10 @@ Updated: 2026-07-06 (initial build session, Claude Fable)
   only, white when embedded).
 - Per-line qty stepper (Brian request): − / + on every order line, live
   totals/covers/per-plate recalc; minus floors at 1, remove stays explicit.
+- Add-a-line-item (Brian request): dashed "+ Add more <group>" per section
+  (in-stock products not already in plan, 1x + stepper from there) and a
+  bottom "+ Add something we didn't include" catch-all for skipped groups.
+  Full edit loop on results: swap / − + / remove / add.
 - How-to card on-site = one button + one deadline sentence; manual steps
   and "Open the store" are github.io-only. Gotcha fixed: our display rules
   beat the `hidden` attribute until `[hidden]{display:none!important}`.
