@@ -250,6 +250,24 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
   padding: 2px;
 }
 
+/* Add-an-item link */
+.add-item-btn {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px 12px;
+  border: 1.5px dashed var(--kraft) !important;
+  border-radius: 8px;
+  background: none !important;
+  color: var(--asphalt) !important;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+.add-item-btn:hover { color: var(--board) !important; border-color: var(--board) !important; }
+
 /* Swap menu */
 .swap-menu {
   margin: -4px 0 8px;
@@ -273,6 +291,15 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
 }
 .swap-menu button:hover { background: var(--kraft-light); }
 .swap-menu .swap-price { color: var(--asphalt); font-size: 0.8rem; }
+.swap-menu__head {
+  font-family: 'Copse', Georgia, serif;
+  font-size: 0.85rem;
+  color: var(--asphalt);
+  padding: 8px 8px 2px;
+  border-bottom: 1px solid var(--kraft-light);
+  margin-bottom: 4px;
+}
+.swap-menu__head:not(:first-child) { margin-top: 8px; }
 
 /* Total */
 .total-line { display: flex; justify-content: space-between; font-size: 1.2rem; margin-bottom: 6px; }

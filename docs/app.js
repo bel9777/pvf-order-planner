@@ -92,6 +92,15 @@ const GROUP_LABELS = {
   eggs: "Eggs",
   pantry: "Stock & Broth Makings",
 };
+const ADD_LABELS = {
+  breakfast: "breakfast meat",
+  chicken: "chicken",
+  pork: "pork",
+  turkey: "turkey",
+  lamb: "lamb",
+  eggs: "eggs",
+  pantry: "stock makings",
+};
 
 const PROTEINS = [
   { key: "chicken", label: "Chicken" },
@@ -365,7 +374,22 @@ function renderResults(scroll = false) {
     section.innerHTML = `<h3>${GROUP_LABELS[group]}</h3>` +
       (covers ? `<p class="covers">${covers}</p>` : "");
     for (const line of lines) section.appendChild(renderLine(line));
+    if (addCandidates(group).length) {
+      section.insertAdjacentHTML(
+        "beforeend",
+        `<button class="add-item-btn" data-group="${group}">+ Add more ${ADD_LABELS[group]}</button>`
+      );
+    }
     wrap.appendChild(section);
+  }
+
+  // Catch-all for anything the plan skipped entirely (a whole protein,
+  // eggs at zero, stock makings) — only when something is addable.
+  if (planLines.length && order.some((g) => !bySection.has(g) && addCandidates(g).length)) {
+    wrap.insertAdjacentHTML(
+      "beforeend",
+      `<div class="order-section"><button class="add-item-btn" data-group="">+ Add something we didn't include</button></div>`
+    );
   }
 
   if (!planLines.length) {
@@ -464,6 +488,40 @@ function renderMonthSummary() {
   const plate = meatCost / plates;
   el.innerHTML = `One delivery covers about ${list} for your family this month.
     The meat works out to about <strong>$${plate.toFixed(2)} a plate</strong>.`;
+}
+
+function addCandidates(group) {
+  return groupProducts(group).filter((p) => !planLines.some((l) => l.slug === p.slug));
+}
+
+function openAddMenu(btn, group) {
+  closeSwapMenus();
+  // Per-section add shows that group; the catch-all shows every group
+  // that has no section yet.
+  const orderAll = ["breakfast", "chicken", "pork", "turkey", "lamb", "eggs", "pantry"];
+  const inPlan = new Set(planLines.map((l) => l.group));
+  const groups = group ? [group] : orderAll.filter((g) => !inPlan.has(g));
+  const menu = document.createElement("div");
+  menu.className = "swap-menu";
+  let any = false;
+  for (const g of groups) {
+    const candidates = addCandidates(g);
+    if (!candidates.length) continue;
+    if (!group) {
+      menu.insertAdjacentHTML("beforeend", `<div class="swap-menu__head">${GROUP_LABELS[g]}</div>`);
+    }
+    for (const p of candidates) {
+      const b = document.createElement("button");
+      b.innerHTML = `${p.name} <span class="swap-price">$${unitPrice(p).toFixed(2)}</span>`;
+      b.addEventListener("click", () => {
+        planLines.push(makeLine(p, 1));
+        renderResults();
+      });
+      menu.appendChild(b);
+      any = true;
+    }
+  }
+  if (any) btn.insertAdjacentElement("afterend", menu);
 }
 
 function openSwapMenu(afterEl, line) {
@@ -667,10 +725,13 @@ function wire() {
   }
 
   $("#order-sections").addEventListener("click", (e) => {
+    const add = e.target.closest(".add-item-btn");
     const qty = e.target.closest(".qty-btn");
     const swap = e.target.closest(".swap-btn");
     const remove = e.target.closest(".remove-btn");
-    if (qty) {
+    if (add) {
+      openAddMenu(add, add.dataset.group || null);
+    } else if (qty) {
       const line = planLines.find((l) => l.slug === qty.dataset.slug);
       if (line) {
         line.qty = Math.max(1, line.qty + Number(qty.dataset.dir));
