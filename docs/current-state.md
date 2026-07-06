@@ -63,6 +63,18 @@ Updated: 2026-07-06 (initial build session, Claude Fable)
   UNLINKED — not in site nav yet, pending Brian's click-through sign-off.
   Launch next: nav link, July delivery email, QR card at Brighton booth.
 
+## Brand inheritance + card cleanup (2026-07-06, after Brian's review)
+
+- Embedded page inherits GrazeCart theme tokens (`--action-color`,
+  `--text-color` from theme-variables.css) so a site rebrand carries over
+  automatically; github.io keeps its own fallbacks (cream bg standalone
+  only, white when embedded).
+- How-to card on-site = one button + one deadline sentence; manual steps
+  and "Open the store" are github.io-only. Gotcha fixed: our display rules
+  beat the `hidden` attribute until `[hidden]{display:none!important}`.
+- github.io assets cache for 10 min (Pages max-age=600) — after a deploy,
+  the embedded page can serve stale CSS/JS briefly; it self-heals.
+
 ## Open items
 
 - Not yet linked from parkviewfamilyfarm.com or announced to customers.
