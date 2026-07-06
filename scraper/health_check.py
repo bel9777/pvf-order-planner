@@ -11,7 +11,7 @@ Exit code:  0 = all healthy, 1 = one or more failures.
 """
 
 import json
-import re
+import os
 import sys
 from datetime import datetime, timezone
 
@@ -126,6 +126,10 @@ def main() -> int:
         sys.stdout.reconfigure(encoding="utf-8")  # Windows console defaults to cp1252
     for fn in (check_assets, check_inventory, check_embed_page, check_nav, check_cart_mechanism):
         fn()
+
+    if os.environ.get("PVF_SIMULATE_FAILURE"):
+        results.append((False, "simulated failure",
+                        "fire drill via workflow_dispatch — not a real outage"))
 
     failures = [r for r in results if not r[0]]
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")

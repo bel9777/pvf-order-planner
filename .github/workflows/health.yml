@@ -5,6 +5,11 @@ on:
     - cron: "47 10 * * *"   # ~6:47 AM Eastern, 30 min after the daily scrape
     - cron: "47 22 * * *"   # ~6:47 PM Eastern
   workflow_dispatch:
+    inputs:
+      simulate_failure:
+        description: "Fire drill: force a failing check to test alerting"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -23,6 +28,8 @@ jobs:
       - name: Run health check
         id: health
         continue-on-error: true
+        env:
+          PVF_SIMULATE_FAILURE: ${{ inputs.simulate_failure == true && '1' || '' }}
         run: |
           python scraper/health_check.py | tee health_report.md
 
