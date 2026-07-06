@@ -353,16 +353,17 @@ function renderResults(scroll = false) {
       const servings = lines.reduce((s, l) => s + l.qty * l.servingsEach, 0);
       const meals = Math.floor(servings / eaters);
       const kind = (group === "breakfast" ? "breakfast" : "dinner") + (meals === 1 ? "" : "s");
-      covers = `Covers about ${meals} family ${kind}`;
+      covers = meals > 0 ? `Covers about ${meals} family ${kind}` : "";
       if (state.leftovers) {
         const lunches = Math.floor(
           lines.reduce((s, l) => s + l.qty * l.leftoversEach, 0) / Math.max(1, eaters)
         );
-        if (lunches > 0) covers += `, plus roughly ${lunches} ${lunches === 1 ? "lunch" : "lunches"} of leftovers`;
+        if (lunches > 0 && meals > 0) covers += `, plus roughly ${lunches} ${lunches === 1 ? "lunch" : "lunches"} of leftovers`;
       }
     }
 
-    section.innerHTML = `<h3>${GROUP_LABELS[group]}</h3><p class="covers">${covers}</p>`;
+    section.innerHTML = `<h3>${GROUP_LABELS[group]}</h3>` +
+      (covers ? `<p class="covers">${covers}</p>` : "");
     for (const line of lines) section.appendChild(renderLine(line));
     wrap.appendChild(section);
   }
@@ -388,7 +389,13 @@ function renderLine(line) {
     ? p.price_unit === "lb" ? `$${p.price.toFixed(2)}/lb` : `$${p.price.toFixed(2)} each`
     : "";
   el.innerHTML = `
-    <span class="order-item__qty">${line.qty}&times;</span>
+    <div class="order-item__qty">
+      <button class="qty-btn" data-slug="${line.slug}" data-dir="-1"
+        aria-label="One fewer ${p.name}" ${line.qty <= 1 ? "disabled" : ""}>&minus;</button>
+      <span class="order-item__qtyvalue">${line.qty}&times;</span>
+      <button class="qty-btn" data-slug="${line.slug}" data-dir="1"
+        aria-label="One more ${p.name}">+</button>
+    </div>
     <div class="order-item__body">
       <div class="order-item__name"><a href="${p.url}" target="_blank" rel="noopener">${p.name}</a></div>
       <div class="order-item__meta">${weightTxt}${priceTxt}</div>
@@ -660,9 +667,16 @@ function wire() {
   }
 
   $("#order-sections").addEventListener("click", (e) => {
+    const qty = e.target.closest(".qty-btn");
     const swap = e.target.closest(".swap-btn");
     const remove = e.target.closest(".remove-btn");
-    if (swap) {
+    if (qty) {
+      const line = planLines.find((l) => l.slug === qty.dataset.slug);
+      if (line) {
+        line.qty = Math.max(1, line.qty + Number(qty.dataset.dir));
+        renderResults();
+      }
+    } else if (swap) {
       const line = planLines.find((l) => l.slug === swap.dataset.slug);
       if (line) openSwapMenu(swap.closest(".order-item"), line);
     } else if (remove) {
