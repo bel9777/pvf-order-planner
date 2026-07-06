@@ -2,6 +2,15 @@
 
 Updated: 2026-07-06 (initial build session, Claude Fable)
 
+## Status: LIVE + LINKED IN NAV (2026-07-06)
+
+Order Planner is in the main site navigation (position 3: Shop Now, About
+Us, Order Planner, Pickup Locations, ...) — added via My Site → Menu Editor
+→ Main Menu, "Order Planner" custom page checkbox → Add to Menu (auto-saves;
+no explicit Save button; drag-reorder resisted synthetic drags but position
+3 is fine). Verified on live storefront. Launch remaining: July delivery
+email section, Brighton QR card.
+
 ## Status: built, tested locally, deploying
 
 - Scraper works against the live store: 50 unique products across 7
