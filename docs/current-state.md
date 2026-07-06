@@ -90,6 +90,20 @@ email section, Brighton QR card.
 - github.io assets cache for 10 min (Pages max-age=600) — after a deploy,
   the embedded page can serve stale CSS/JS briefly; it self-heals.
 
+## Health monitoring (2026-07-06)
+
+- `scraper/health_check.py` probes the LIVE system outside-in twice daily
+  (10:47 + 22:47 UTC via `.github/workflows/health.yml`): github.io assets,
+  inventory freshness (<30h) + sanity, embed present on /order-planner,
+  nav link present, GrazeCart cart-mechanism platform markers (Livewire v3
+  snapshot markup, /livewire/update, csrfToken, addToCart surface —
+  sessionless probe; the signed-in component itself isn't visible logged out).
+- Failure → opens/updates a GitHub issue labeled `health` on this repo
+  (Brian gets the notification email) + the run fails (second email channel).
+  Recovery → auto-closes the issue. No secrets, no external services.
+- Side benefit: the daily scrape commit keeps the repo active, so GitHub's
+  60-day auto-disable of scheduled workflows never triggers.
+
 ## Open items
 
 - Not yet linked from parkviewfamilyfarm.com or announced to customers.

@@ -1,0 +1,55 @@
+name: Health check
+
+on:
+  schedule:
+    - cron: "47 10 * * *"   # ~6:47 AM Eastern, 30 min after the daily scrape
+    - cron: "47 22 * * *"   # ~6:47 PM Eastern
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4
+
+      - name: Run health check
+        id: health
+        continue-on-error: true
+        run: |
+          python scraper/health_check.py | tee health_report.md
+
+      - name: Open or update alert issue on failure
+        if: steps.health.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh label create health --color D93F0B --description "Automated health-check alerts" --force
+          existing=$(gh issue list --state open --label health --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file health_report.md
+          else
+            gh issue create --title "Order Planner health check failing" \
+              --label health --body-file health_report.md
+          fi
+          exit 1
+
+      - name: Auto-close recovered alerts
+        if: steps.health.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          for n in $(gh issue list --state open --label health --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "$(cat health_report.md)
+
+          All checks passing again — auto-closed."
+          done
