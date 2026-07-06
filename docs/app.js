@@ -8,6 +8,10 @@
 const WEEKS_PER_MONTH = 4.33;
 const KID_APPETITE = 0.6; // kids count as 0.6 adult servings
 const STORE = "https://parkviewfamilyfarm.com";
+const APP_BASE = "https://bel9777.github.io/pvf-order-planner/";
+// One-click cart fill only works same-origin (GrazeCart Livewire calls need
+// the customer's session + CSRF). On github.io we fall back to the link list.
+const CAN_CART = /(^|\.)parkviewfamilyfarm\.com$/.test(location.hostname);
 
 /* ------------------------------------------------------------------ *
  * Product knowledge: meal group, adult servings per package, and how
@@ -478,6 +482,93 @@ function closeSwapMenus() {
   $$(".swap-menu").forEach((m) => m.remove());
 }
 
+/* --------------------- one-click cart fill ------------------------ *
+ * Same-origin only. For each plan line: fetch the product page, lift the
+ * add-to-cart Livewire component's wire:snapshot, then POST /livewire/update
+ * with qty stacked addToCart calls. This mirrors exactly what the store's
+ * own Add to Cart button does, using the customer's session.
+ * ------------------------------------------------------------------ */
+
+function csrfToken() {
+  return document.querySelector("#csrfToken")?.content
+      || document.querySelector('meta[name="csrf-token"]')?.content || null;
+}
+
+function signedIn() {
+  // GrazeCart shows a Sign In link in the auxiliary menu only when logged out.
+  return !document.querySelector('.auxiliaryMenu a[href*="/login"]');
+}
+
+async function fetchAddSnapshot(slug) {
+  const resp = await fetch(`/store/product/${slug}`);
+  if (!resp.ok) throw new Error(`product page ${resp.status}`);
+  const doc = new DOMParser().parseFromString(await resp.text(), "text/html");
+  const el = [...doc.querySelectorAll("[wire\\:snapshot]")].find((e) =>
+    e.getAttribute("wire:snapshot").includes("theme.add-product-button"));
+  if (!el) throw new Error("no add-to-cart component");
+  return el.getAttribute("wire:snapshot");
+}
+
+async function addLineToCart(line, token) {
+  const snapshot = await fetchAddSnapshot(line.slug);
+  const productId = JSON.parse(snapshot).data.product[1].key;
+  const calls = Array.from({ length: line.qty }, () => ({
+    path: "", method: "addToCart", params: [productId],
+  }));
+  const resp = await fetch("/livewire/update", {
+    method: "POST",
+    headers: { "Content-type": "application/json", "X-Livewire": "" },
+    body: JSON.stringify({ _token: token, components: [{ snapshot, updates: {}, calls }] }),
+  });
+  if (!resp.ok) throw new Error(`livewire ${resp.status}`);
+  const data = await resp.json();
+  if (!data?.components) throw new Error("unexpected response");
+}
+
+async function addAllToCart() {
+  const btn = $("#add-all-btn");
+  const status = $("#add-all-status");
+  if (btn.dataset.done) { location.href = "/cart"; return; }
+  status.hidden = true;
+
+  const token = csrfToken();
+  if (!token || !signedIn()) {
+    status.hidden = false;
+    status.innerHTML = `You'll need to <a href="/login">sign in</a> first.
+      Your answers are saved on this device, so your plan will be waiting when you're back.`;
+    return;
+  }
+
+  btn.disabled = true;
+  const lines = planLines.filter((l) => inventory[l.slug]?.in_stock);
+  const failed = [];
+  let done = 0;
+  for (const line of lines) {
+    btn.textContent = `Adding to your cart: ${++done} of ${lines.length}`;
+    try {
+      await addLineToCart(line, token);
+    } catch (e) {
+      failed.push(inventory[line.slug].name);
+    }
+  }
+
+  if (failed.length === lines.length) {
+    btn.disabled = false;
+    btn.textContent = "Add everything to my cart";
+    status.hidden = false;
+    status.textContent = "That didn't work. Use the item links above instead, or refresh and try again.";
+  } else if (failed.length) {
+    btn.disabled = false;
+    btn.textContent = "Open my cart";
+    btn.dataset.done = "1";
+    status.hidden = false;
+    status.textContent = `Everything's in your cart except: ${failed.join(", ")}. Tap those in the list above to add them.`;
+  } else {
+    btn.textContent = "Done! Taking you to your cart";
+    setTimeout(() => { location.href = "/cart"; }, 600);
+  }
+}
+
 /* ------------------------- wiring --------------------------------- */
 
 function persist() {
@@ -556,6 +647,12 @@ function wire() {
     renderResults(true);
   });
 
+  if (CAN_CART) {
+    $("#add-all-btn").hidden = false;
+    $("#howto-store-link").hidden = true;
+    $("#add-all-btn").addEventListener("click", addAllToCart);
+  }
+
   $("#order-sections").addEventListener("click", (e) => {
     const swap = e.target.closest(".swap-btn");
     const remove = e.target.closest(".remove-btn");
@@ -573,14 +670,16 @@ function wire() {
 
 async function init() {
   restore();
-  const resp = await fetch("inventory.json", { cache: "no-cache" });
+  const resp = await fetch(APP_BASE + "inventory.json", { cache: "no-cache" });
   const data = await resp.json();
   inventory = {};
   for (const p of data.products) inventory[p.slug] = p;
-  const scraped = new Date(data.scraped_at);
-  $("#inventory-date").textContent = scraped.toLocaleDateString("en-US", {
-    month: "long", day: "numeric", year: "numeric",
-  });
+  const dateEl = $("#inventory-date");
+  if (dateEl) {
+    dateEl.textContent = new Date(data.scraped_at).toLocaleDateString("en-US", {
+      month: "long", day: "numeric", year: "numeric",
+    });
+  }
   syncControls();
   wire();
 }
