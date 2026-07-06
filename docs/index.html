@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monthly Order Planner | Park View Farm</title>
+<meta name="description" content="Plan your monthly Park View Farm delivery. Tell us how your family eats and we'll build your order of corn-and-soy-free, pasture-raised meat and eggs.">
+<link rel="icon" type="image/png" href="https://s3.amazonaws.com/grazecart/parkviewfamilyfarms/images/1723474017_66ba20616d344.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Copse:400%7CHind:400,500,600,700">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <a href="https://parkviewfamilyfarm.com" class="masthead__farm">Park View Farm</a>
+  <h1>Monthly Order Planner</h1>
+  <p class="masthead__sub">Tell us how your family eats. We'll turn it into a month of
+  breakfasts, dinners, and lunches from the farm, ready to add to your cart.</p>
+</header>
+
+<main id="planner">
+
+  <!-- Step 1: Delivery area -->
+  <section class="card" id="step-zone">
+    <h2><span class="stepnum">1</span> Where do we deliver to you?</h2>
+    <div class="zone-picker" role="radiogroup" aria-label="Delivery area">
+      <button class="zone" data-zone="rochester" aria-pressed="true">
+        <strong>Rochester</strong>
+        <span class="zone__when" id="zone-when-rochester"></span>
+      </button>
+      <button class="zone" data-zone="buffalo" aria-pressed="false">
+        <strong>Buffalo</strong>
+        <span class="zone__when" id="zone-when-buffalo"></span>
+      </button>
+    </div>
+    <p class="fineprint">$100 minimum &middot; $20 delivery fee &middot; free delivery on orders $200+</p>
+  </section>
+
+  <!-- Step 2: Household -->
+  <section class="card" id="step-household">
+    <h2><span class="stepnum">2</span> Who's at your table?</h2>
+    <div class="row">
+      <div class="stepper" data-input="adults" data-min="1" data-max="8">
+        <label>Adults</label>
+        <div class="stepper__controls">
+          <button class="stepper__btn" data-dir="-1" aria-label="Fewer adults">&minus;</button>
+          <span class="stepper__value">2</span>
+          <button class="stepper__btn" data-dir="1" aria-label="More adults">+</button>
+        </div>
+      </div>
+      <div class="stepper" data-input="kids" data-min="0" data-max="8">
+        <label>Kids</label>
+        <div class="stepper__controls">
+          <button class="stepper__btn" data-dir="-1" aria-label="Fewer kids">&minus;</button>
+          <span class="stepper__value">2</span>
+          <button class="stepper__btn" data-dir="1" aria-label="More kids">+</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: Meals -->
+  <section class="card" id="step-meals">
+    <h2><span class="stepnum">3</span> How does a normal week eat?</h2>
+    <div class="row row--wrap">
+      <div class="stepper" data-input="dinners" data-min="0" data-max="7">
+        <label>Dinners cooked at home <small>per week</small></label>
+        <div class="stepper__controls">
+          <button class="stepper__btn" data-dir="-1" aria-label="Fewer dinners">&minus;</button>
+          <span class="stepper__value">4</span>
+          <button class="stepper__btn" data-dir="1" aria-label="More dinners">+</button>
+        </div>
+      </div>
+      <div class="stepper" data-input="breakfasts" data-min="0" data-max="7">
+        <label>Breakfasts with meat <small>per week</small></label>
+        <div class="stepper__controls">
+          <button class="stepper__btn" data-dir="-1" aria-label="Fewer breakfasts">&minus;</button>
+          <span class="stepper__value">2</span>
+          <button class="stepper__btn" data-dir="1" aria-label="More breakfasts">+</button>
+        </div>
+      </div>
+      <div class="stepper" data-input="eggDozens" data-min="0" data-max="6">
+        <label>Dozens of eggs <small>per week</small></label>
+        <div class="stepper__controls">
+          <button class="stepper__btn" data-dir="-1" aria-label="Fewer eggs">&minus;</button>
+          <span class="stepper__value">1</span>
+          <button class="stepper__btn" data-dir="1" aria-label="More eggs">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="toggles">
+      <label class="toggle">
+        <input type="checkbox" id="opt-leftovers" checked>
+        <span>Plan bigger cuts so leftovers cover lunches</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="opt-stock">
+        <span>We make our own stock and broth</span>
+      </label>
+    </div>
+  </section>
+
+  <!-- Step 4: Proteins -->
+  <section class="card" id="step-proteins">
+    <h2><span class="stepnum">4</span> What does your family reach for?</h2>
+    <div id="protein-rows"></div>
+  </section>
+
+  <div class="build-row">
+    <button id="build-btn" class="btn-primary">Build my order</button>
+  </div>
+
+  <!-- Results -->
+  <section id="results" class="results" hidden>
+    <div class="card card--delivery">
+      <h2 id="results-delivery-head"></h2>
+      <p id="results-delivery-sub"></p>
+    </div>
+
+    <div id="order-sections"></div>
+
+    <div class="card card--total">
+      <div class="total-line">
+        <span>Estimated total</span>
+        <strong id="order-total"></strong>
+      </div>
+      <div class="meter"><div class="meter__fill" id="meter-fill"></div>
+        <span class="meter__mark meter__mark--min">$100 min</span>
+        <span class="meter__mark meter__mark--free">$200 free delivery</span>
+      </div>
+      <p id="delivery-status" class="delivery-status"></p>
+      <p class="fineprint">Prices are estimates based on average package weights. Your invoice
+      reflects actual weights at packing.</p>
+    </div>
+
+    <div class="card card--howto">
+      <h2>Putting in the order</h2>
+      <ol>
+        <li>Tap each item in your list to open it on our store, then add it to your cart.</li>
+        <li>Check out with your delivery date selected.</li>
+        <li id="howto-deadline"></li>
+      </ol>
+      <a class="btn-primary btn-primary--wide" href="https://parkviewfamilyfarm.com/store" target="_blank" rel="noopener">Open the store</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Park View Farm &middot; Leicester, NY &middot; Pasture-raised, corn-and-soy-free</p>
+  <p class="fineprint">Inventory updated <span id="inventory-date"></span>. Out-of-stock cuts are left out of your plan automatically.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
