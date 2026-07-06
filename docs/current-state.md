@@ -25,6 +25,16 @@ Updated: 2026-07-06 (initial build session, Claude Fable)
 
 ## Post-launch tweaks (2026-07-06, same day)
 
+- Live recalculation: after the first "Build my order," every input change
+  rebuilds the list immediately (button becomes "Rebuild my order").
+  Rebuilds intentionally reset manual swaps/removes.
+- Total card now carries the month framing + per-plate line: "One delivery
+  covers about N dinners, M breakfasts and L lunches of leftovers... about
+  $X.XX a plate" (meat cost / all meat servings incl. leftovers; eggs and
+  stock excluded from plate math).
+- Copy pass: "with our meat" on both meal steppers (fish/beef nights
+  excluded by wording), plainer section header.
+
 - Dinners question reframed after Brian's test: it now asks for dinners
   built around farm meat, not all home cooking ("Pasta night and leftovers
   night don't need us"), default 3/week. Brian's $731 test build was correct

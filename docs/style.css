@@ -242,7 +242,9 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
 .swap-menu .swap-price { color: var(--asphalt); font-size: 0.8rem; }
 
 /* Total */
-.total-line { display: flex; justify-content: space-between; font-size: 1.2rem; margin-bottom: 14px; }
+.total-line { display: flex; justify-content: space-between; font-size: 1.2rem; margin-bottom: 6px; }
+.month-summary { color: var(--asphalt); margin: 0 0 14px; }
+.month-summary strong { color: var(--board); }
 .meter {
   position: relative;
   background: var(--kraft-light);

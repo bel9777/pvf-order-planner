@@ -149,6 +149,7 @@ const state = {
 
 let inventory = null;   // slug -> product (in-stock knowledge included)
 let planLines = [];     // current built plan
+let planBuilt = false;  // once true, input changes rebuild the plan live
 
 function metaFor(p) {
   const m = META[p.slug];
@@ -298,7 +299,15 @@ function renderProteins() {
   }
 }
 
-function renderResults() {
+/* Rebuild the plan from current inputs. Runs on every input change once
+   the first plan exists, so + / - update the list immediately. Manual
+   swaps and removes reset here on purpose: inputs drive the plan. */
+function refreshPlan(scroll = false) {
+  planLines = buildPlan();
+  renderResults(scroll);
+}
+
+function renderResults(scroll = false) {
   const results = $("#results");
   results.hidden = false;
 
@@ -352,8 +361,13 @@ function renderResults() {
     wrap.appendChild(section);
   }
 
+  if (!planLines.length) {
+    wrap.innerHTML = `<div class="card"><p>Nothing on the list yet. Set a few
+      meals or eggs above and it fills in on its own.</p></div>`;
+  }
+
   renderTotal();
-  results.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (scroll) results.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function renderLine(line) {
@@ -384,6 +398,7 @@ function renderLine(line) {
 function renderTotal() {
   const total = planLines.reduce((s, l) => s + linePrice(l), 0);
   $("#order-total").textContent = `$${total.toFixed(2)}`;
+  renderMonthSummary();
   const fill = $("#meter-fill");
   fill.style.width = Math.min(100, (total / 250) * 100) + "%";
   fill.classList.toggle("meter__fill--under", total < 100);
@@ -400,6 +415,42 @@ function renderTotal() {
       `Orders need to reach $100. You're $${(100 - total).toFixed(2)} short.`;
     status.className = "delivery-status delivery-status--warn";
   }
+}
+
+/* "One delivery covers about N dinners, M breakfasts, and L lunches for
+   your family this month" + honest per-plate math on the meat. */
+function renderMonthSummary() {
+  const el = $("#month-summary");
+  const eaters = Math.max(1, state.adults + state.kids * KID_APPETITE);
+  const DINNER_GROUPS = ["chicken", "pork", "turkey", "lamb"];
+  let dinnerServ = 0, breakfastServ = 0, leftoverServ = 0, meatCost = 0;
+  for (const line of planLines) {
+    if (DINNER_GROUPS.includes(line.group)) {
+      dinnerServ += line.qty * line.servingsEach;
+      leftoverServ += line.qty * line.leftoversEach;
+      meatCost += linePrice(line);
+    } else if (line.group === "breakfast") {
+      breakfastServ += line.qty * line.servingsEach;
+      meatCost += linePrice(line);
+    }
+  }
+  if (!state.leftovers) leftoverServ = 0;
+  const plates = dinnerServ + breakfastServ + leftoverServ;
+  if (plates <= 0) { el.textContent = ""; return; }
+
+  const parts = [];
+  const dinners = Math.floor(dinnerServ / eaters);
+  const breakfasts = Math.floor(breakfastServ / eaters);
+  const lunches = Math.floor(leftoverServ / eaters);
+  if (dinners) parts.push(`${dinners} dinner${dinners === 1 ? "" : "s"}`);
+  if (breakfasts) parts.push(`${breakfasts} breakfast${breakfasts === 1 ? "" : "s"}`);
+  if (lunches) parts.push(`${lunches} lunch${lunches === 1 ? "" : "es"} of leftovers`);
+  const list = parts.length > 1
+    ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1]
+    : parts[0];
+  const plate = meatCost / plates;
+  el.innerHTML = `One delivery covers about ${list} for your family this month.
+    The meat works out to about <strong>$${plate.toFixed(2)} a plate</strong>.`;
 }
 
 function openSwapMenu(afterEl, line) {
@@ -462,6 +513,7 @@ function wire() {
         state[key] = Math.min(max, Math.max(min, state[key] + Number(btn.dataset.dir)));
         $(".stepper__value", st).textContent = state[key];
         persist();
+        if (planBuilt) refreshPlan();
       })
     );
   });
@@ -471,11 +523,18 @@ function wire() {
       state.zone = btn.dataset.zone;
       renderZones();
       persist();
+      if (planBuilt) refreshPlan();
     })
   );
 
-  $("#opt-leftovers").addEventListener("change", (e) => { state.leftovers = e.target.checked; persist(); });
-  $("#opt-stock").addEventListener("change", (e) => { state.stock = e.target.checked; persist(); });
+  $("#opt-leftovers").addEventListener("change", (e) => {
+    state.leftovers = e.target.checked; persist();
+    if (planBuilt) refreshPlan();
+  });
+  $("#opt-stock").addEventListener("change", (e) => {
+    state.stock = e.target.checked; persist();
+    if (planBuilt) refreshPlan();
+  });
 
   $("#protein-rows").addEventListener("click", (e) => {
     const chip = e.target.closest(".freq-chip");
@@ -483,6 +542,7 @@ function wire() {
     state.freq[chip.dataset.key] = Number(chip.dataset.weight);
     renderProteins();
     persist();
+    if (planBuilt) refreshPlan();
   });
 
   $("#build-btn").addEventListener("click", () => {
@@ -491,7 +551,9 @@ function wire() {
       alert("Set at least one meal per week (or some eggs) and we'll build your order.");
       return;
     }
-    renderResults();
+    planBuilt = true;
+    $("#build-btn").textContent = "Rebuild my order";
+    renderResults(true);
   });
 
   $("#order-sections").addEventListener("click", (e) => {
