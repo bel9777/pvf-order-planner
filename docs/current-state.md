@@ -69,6 +69,8 @@ Updated: 2026-07-06 (initial build session, Claude Fable)
   `--text-color` from theme-variables.css) so a site rebrand carries over
   automatically; github.io keeps its own fallbacks (cream bg standalone
   only, white when embedded).
+- Per-line qty stepper (Brian request): − / + on every order line, live
+  totals/covers/per-plate recalc; minus floors at 1, remove stays explicit.
 - How-to card on-site = one button + one deadline sentence; manual steps
   and "Open the store" are github.io-only. Gotcha fixed: our display rules
   beat the `hidden` attribute until `[hidden]{display:none!important}`.
