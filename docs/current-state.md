@@ -58,8 +58,10 @@ Updated: 2026-07-06 (initial build session, Claude Fable)
 - On github.io the button stays hidden (link-list fallback).
 - Fragility note: this rides GrazeCart's internal Livewire mechanism —
   a platform update could break the button; fallback is the link list.
-- NOT YET DONE: the actual GrazeCart page doesn't exist. Next step is
-  creating it in admin (Brian approval), then linking it in nav/emails.
+- **PAGE IS LIVE (2026-07-06): https://parkviewfamilyfarm.com/order-planner**
+  (GrazeCart admin page id 7, HTML widget with the two-line embed snippet).
+  UNLINKED — not in site nav yet, pending Brian's click-through sign-off.
+  Launch next: nav link, July delivery email, QR card at Brighton booth.
 
 ## Open items
 
