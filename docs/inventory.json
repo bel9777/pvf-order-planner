@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-07-17T11:42:48Z",
+ "scraped_at": "2026-07-18T11:19:05Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -496,7 +496,7 @@
    "price": 3.25,
    "price_unit": "lb",
    "avg_weight_lb": 2.5,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/7a0f3998-bb60-44a6-9cc8-b9e050a3b7fc.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/turkey-necks"
   },
