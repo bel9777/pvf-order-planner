@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-07-23T12:03:59Z",
+ "scraped_at": "2026-07-24T11:56:40Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -79,7 +79,7 @@
    "price": 7.75,
    "price_unit": "lb",
    "avg_weight_lb": 4.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/c1237102-a129-4ff8-82e2-f61508a3153d.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-spatchcocked"
   },
