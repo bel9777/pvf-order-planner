@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-07-28T12:15:44Z",
+ "scraped_at": "2026-07-29T12:22:40Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -103,7 +103,7 @@
    "price": 12.5,
    "price_unit": "lb",
    "avg_weight_lb": 1.5,
-   "in_stock": false,
+   "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/63494930-e9d1-4c80-ad43-2e7b88d5c258.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-thighs"
   },
