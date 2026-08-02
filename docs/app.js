@@ -7,6 +7,7 @@
 
 const WEEKS_PER_MONTH = 4.33;
 const KID_APPETITE = 0.6; // kids count as 0.6 adult servings
+const MEALS_PER_DISTINCT_CUT = 2.5;
 const STORE = "https://parkviewfamilyfarm.com";
 const APP_BASE = "https://bel9777.github.io/pvf-order-planner/";
 // One-click cart fill only works same-origin (GrazeCart Livewire calls need
@@ -180,6 +181,10 @@ function unitPrice(p) {
   return p.price_unit === "lb" ? p.price * (p.avg_weight_lb || 1) : p.price;
 }
 
+function roundMoney(value) {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
 function groupProducts(group, { inStockOnly = true } = {}) {
   return Object.values(inventory)
     .filter((p) => metaFor(p).group === group)
@@ -190,37 +195,96 @@ function groupProducts(group, { inStockOnly = true } = {}) {
 function rotationFor(group, preferLeftovers) {
   let items = groupProducts(group).filter((p) => (metaFor(p).rotate ?? 0) > 0);
   if (!preferLeftovers) {
-    // No lunch-leftover planning: nudge big roasts later in the rotation.
-    items = items.slice().sort((a, b) => {
-      const ra = (metaFor(a).rotate ?? 9) + ((metaFor(a).leftovers || 0) >= 2 ? 1 : 0);
-      const rb = (metaFor(b).rotate ?? 9) + ((metaFor(b).leftovers || 0) >= 2 ? 1 : 0);
-      return ra - rb;
-    });
+    // No lunch-leftover planning: keep roasts and whole birds swap-only when
+    // portion-size cuts are available for this protein.
+    const portionCuts = items.filter((p) => !(metaFor(p).leftovers || 0));
+    if (portionCuts.length) items = portionCuts;
   }
   return items;
 }
 
-/* Greedy variety fill: walk the rotation adding one package at a time
-   until the group's servings are covered. Variety scales with volume:
-   roughly one distinct cut per 2.5 meals, so a light month gets the
-   farm's default picks and a heavy month gets range. */
-function fillGroup(group, servingsNeeded, eaters, preferLeftovers) {
-  let rotation = rotationFor(group, preferLeftovers);
-  if (!rotation.length || servingsNeeded <= 0) return [];
-  const meals = servingsNeeded / Math.max(1, eaters);
-  const variety = Math.min(rotation.length, Math.max(1, Math.ceil(meals / 2.5)));
-  rotation = rotation.slice(0, variety);
-  const units = new Map();
-  let remaining = servingsNeeded;
-  let idx = 0;
+/* D'Hondt allocation keeps whole meal/cut slots close to the customer's
+   protein weights without creating fractional targets that every group then
+   rounds up independently. Capacity is used for distinct-cut slots. */
+function allocateWeightedSeats(items, seatCount) {
+  const seats = new Map(items.map((item) => [item.key, 0]));
+  let remaining = seatCount;
+
+  while (remaining-- > 0) {
+    let best = null;
+    for (const item of items) {
+      const used = seats.get(item.key) || 0;
+      if (used >= (item.capacity ?? Infinity)) continue;
+      const score = item.w / (used + 1);
+      if (!best || score > best.score) best = { item, score };
+    }
+    if (!best) break;
+    seats.set(best.item.key, (seats.get(best.item.key) || 0) + 1);
+  }
+  return seats;
+}
+
+function allocateProportionalSeats(items, seatCount) {
+  const totalWeight = items.reduce((sum, item) => sum + item.w, 0);
+  const rows = items.map((item, index) => {
+    const exact = totalWeight > 0 ? (seatCount * item.w) / totalWeight : 0;
+    return { item, index, seats: Math.floor(exact), remainder: exact - Math.floor(exact) };
+  });
+  let remaining = seatCount - rows.reduce((sum, row) => sum + row.seats, 0);
+  for (const row of rows.slice().sort((a, b) => b.remainder - a.remainder || a.index - b.index)) {
+    if (remaining-- <= 0) break;
+    row.seats++;
+  }
+  return new Map(rows.map((row) => [row.item.key, row.seats]));
+}
+
+function fillRotation(rotation, servingsNeeded) {
+  const units = new Map(rotation.map((p) => [p.slug, 1]));
+  let total = rotation.reduce((sum, p) => sum + (metaFor(p).servings || 1), 0);
+  let remaining = servingsNeeded - total;
   let guard = 400;
   while (remaining > 0 && guard-- > 0) {
-    const p = rotation[idx % rotation.length];
-    units.set(p.slug, (units.get(p.slug) || 0) + 1);
-    remaining -= metaFor(p).servings || 1;
-    idx++;
+    const leastUnits = Math.min(...rotation.map((p) => units.get(p.slug)));
+    const candidates = rotation.filter((p) => units.get(p.slug) === leastUnits);
+    const p = candidates.slice().sort((a, b) => {
+      const sa = metaFor(a).servings || 1, sb = metaFor(b).servings || 1;
+      const distance = Math.abs(remaining - sa) - Math.abs(remaining - sb);
+      if (distance) return distance;
+      const finishes = Number(sb >= remaining) - Number(sa >= remaining);
+      return finishes || unitPrice(a) - unitPrice(b);
+    })[0];
+    units.set(p.slug, units.get(p.slug) + 1);
+    const servings = metaFor(p).servings || 1;
+    remaining -= servings;
+    total += servings;
   }
-  return [...units.entries()].map(([slug, qty]) => makeLine(inventory[slug], qty));
+  return { units, total };
+}
+
+/* Package-aware variety fill. Compare practical rotation choices and keep
+   the most varied combination that has the least serving overage. */
+function fillGroup(group, servingsNeeded, eaters, preferLeftovers, varietyTarget = null) {
+  const availableRotation = rotationFor(group, preferLeftovers);
+  let rotation = availableRotation;
+  if (!rotation.length || servingsNeeded <= 0) return [];
+  const meals = servingsNeeded / Math.max(1, eaters);
+  const desiredVariety = varietyTarget ?? Math.max(1, Math.floor(meals / MEALS_PER_DISTINCT_CUT));
+  const variety = Math.min(rotation.length, Math.max(1, desiredVariety));
+  const attempts = variety === 1
+    ? availableRotation.map((p) => [p])
+    : Array.from({ length: variety }, (_, index) => availableRotation.slice(0, index + 1));
+
+  let best = null;
+  for (const selected of attempts) {
+    const count = selected.length;
+    const attempt = fillRotation(selected, servingsNeeded);
+    const overage = attempt.total - servingsNeeded;
+    if (!best || overage < best.overage - 1e-9 ||
+        (Math.abs(overage - best.overage) <= 1e-9 && count > best.variety)) {
+      best = { ...attempt, overage, variety: count };
+    }
+  }
+  return [...best.units.entries()].map(([slug, qty]) => makeLine(inventory[slug], qty));
 }
 
 function makeLine(product, qty) {
@@ -242,19 +306,38 @@ function buildPlan() {
   const breakfastServings = state.breakfasts * WEEKS_PER_MONTH * eaters;
   lines.push(...fillGroup("breakfast", breakfastServings, eaters, state.leftovers));
 
-  // Dinners split across chosen proteins
+  // Dinners: allocate whole family meals and a global variety budget across
+  // chosen proteins before converting those allocations into packages.
   const weights = PROTEINS.map((p) => ({ key: p.key, w: state.freq[p.key] || 0 }))
     .filter((x) => x.w > 0 && rotationFor(x.key, state.leftovers).length > 0);
   const totalW = weights.reduce((s, x) => s + x.w, 0);
-  const dinnerServings = state.dinners * WEEKS_PER_MONTH * eaters;
-  if (totalW > 0) {
-    for (const { key, w } of weights) {
-      lines.push(...fillGroup(key, (dinnerServings * w) / totalW, eaters, state.leftovers));
+  const dinnerMeals = state.dinners * WEEKS_PER_MONTH;
+  if (totalW > 0 && dinnerMeals > 0) {
+    const cutCandidates = weights.map(({ key, w }) => ({
+      key, w, capacity: rotationFor(key, state.leftovers).length,
+    }));
+    const cutSlots = Math.min(
+      cutCandidates.reduce((sum, item) => sum + item.capacity, 0),
+      Math.max(1, Math.floor(dinnerMeals / MEALS_PER_DISTINCT_CUT))
+    );
+    const cutsByProtein = allocateWeightedSeats(cutCandidates, cutSlots);
+    const selected = weights.filter(({ key }) => (cutsByProtein.get(key) || 0) > 0);
+    const mealsByProtein = allocateProportionalSeats(selected, Math.ceil(dinnerMeals));
+
+    for (const { key } of selected) {
+      const groupMeals = mealsByProtein.get(key) || 0;
+      lines.push(...fillGroup(
+        key,
+        groupMeals * eaters,
+        eaters,
+        state.leftovers,
+        cutsByProtein.get(key)
+      ));
     }
   }
 
   // Eggs
-  const dozens = Math.round(state.eggDozens * WEEKS_PER_MONTH);
+  const dozens = Math.ceil(state.eggDozens * WEEKS_PER_MONTH);
   const eggs = groupProducts("eggs")[0];
   if (dozens > 0 && eggs) lines.push(makeLine(eggs, dozens));
 
@@ -275,7 +358,11 @@ const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
 
 function linePrice(line) {
-  return unitPrice(inventory[line.slug]) * line.qty;
+  return roundMoney(unitPrice(inventory[line.slug]) * line.qty);
+}
+
+function orderTotal(lines = planLines) {
+  return roundMoney(lines.reduce((sum, line) => sum + linePrice(line), 0));
 }
 
 function renderZones() {
@@ -433,7 +520,7 @@ function renderLine(line) {
 }
 
 function renderTotal() {
-  const total = planLines.reduce((s, l) => s + linePrice(l), 0);
+  const total = orderTotal();
   $("#order-total").textContent = `$${total.toFixed(2)}`;
   renderMonthSummary();
   const fill = $("#meter-fill");
@@ -460,11 +547,17 @@ function renderMonthSummary() {
   const el = $("#month-summary");
   const eaters = Math.max(1, state.adults + state.kids * KID_APPETITE);
   const DINNER_GROUPS = ["chicken", "pork", "turkey", "lamb"];
+  const dinnerByGroup = new Map(DINNER_GROUPS.map((group) => [group, 0]));
+  const leftoversByGroup = new Map(DINNER_GROUPS.map((group) => [group, 0]));
   let dinnerServ = 0, breakfastServ = 0, leftoverServ = 0, meatCost = 0;
   for (const line of planLines) {
     if (DINNER_GROUPS.includes(line.group)) {
-      dinnerServ += line.qty * line.servingsEach;
-      leftoverServ += line.qty * line.leftoversEach;
+      const servings = line.qty * line.servingsEach;
+      const leftovers = line.qty * line.leftoversEach;
+      dinnerServ += servings;
+      leftoverServ += leftovers;
+      dinnerByGroup.set(line.group, dinnerByGroup.get(line.group) + servings);
+      leftoversByGroup.set(line.group, leftoversByGroup.get(line.group) + leftovers);
       meatCost += linePrice(line);
     } else if (line.group === "breakfast") {
       breakfastServ += line.qty * line.servingsEach;
@@ -476,16 +569,27 @@ function renderMonthSummary() {
   if (plates <= 0) { el.textContent = ""; return; }
 
   const parts = [];
-  const dinners = Math.floor(dinnerServ / eaters);
+  const dinners = DINNER_GROUPS.reduce(
+    (sum, group) => sum + Math.floor(dinnerByGroup.get(group) / eaters), 0
+  );
   const breakfasts = Math.floor(breakfastServ / eaters);
-  const lunches = Math.floor(leftoverServ / eaters);
+  const lunches = state.leftovers
+    ? DINNER_GROUPS.reduce(
+        (sum, group) => sum + Math.floor(leftoversByGroup.get(group) / eaters), 0
+      )
+    : 0;
   if (dinners) parts.push(`${dinners} dinner${dinners === 1 ? "" : "s"}`);
   if (breakfasts) parts.push(`${breakfasts} breakfast${breakfasts === 1 ? "" : "s"}`);
   if (lunches) parts.push(`${lunches} lunch${lunches === 1 ? "" : "es"} of leftovers`);
+  const plate = meatCost / plates;
+  if (!parts.length) {
+    el.innerHTML = `This list has some meat, but not enough for a full family meal yet.
+      The meat works out to about <strong>$${plate.toFixed(2)} a plate</strong>.`;
+    return;
+  }
   const list = parts.length > 1
     ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1]
     : parts[0];
-  const plate = meatCost / plates;
   el.innerHTML = `One delivery covers about ${list} for your family this month.
     The meat works out to about <strong>$${plate.toFixed(2)} a plate</strong>.`;
 }
@@ -535,7 +639,7 @@ function openSwapMenu(afterEl, line) {
     const covered = line.qty * line.servingsEach;
     const qty = Math.max(1, Math.ceil(covered / (m.servings || 1)));
     const btn = document.createElement("button");
-    btn.innerHTML = `${qty}&times; ${alt.name} <span class="swap-price">$${(unitPrice(alt) * qty).toFixed(2)}</span>`;
+    btn.innerHTML = `${qty}&times; ${alt.name} <span class="swap-price">$${roundMoney(unitPrice(alt) * qty).toFixed(2)}</span>`;
     btn.addEventListener("click", () => {
       Object.assign(line, makeLine(alt, qty));
       renderResults();

@@ -1,6 +1,6 @@
 # Current state — PVF Order Planner
 
-Updated: 2026-07-06 (initial build session, Claude Fable)
+Updated: 2026-08-02 (math fixes published, Codex)
 
 ## Status: LIVE + LINKED IN NAV (2026-07-06)
 
@@ -104,10 +104,78 @@ email section, Brighton QR card.
 - Side benefit: the daily scrape commit keeps the repo active, so GitHub's
   60-day auto-disable of scheduled workflows never triggers.
 
+## Math audit (2026-08-01, Codex, read-only)
+
+> Historical audit record. All five implementation defects below were fixed
+> locally on 2026-08-02; see the verification section that follows.
+
+- Audited the live GitHub Pages calculation code against the live inventory
+  snapshot scraped 2026-08-01 11:35:58Z. Exhaustively checked every allowed
+  household size, dinner count, protein-weight combination, and leftovers
+  setting. No planner code, live site, cart, or GrazeCart setting was changed.
+- **High priority:** dinner targets are split by protein and each protein is
+  rounded up independently by `fillGroup()`. The default household requests
+  12.99 dinners/month but receives 15 by the planner's own serving assumptions
+  (48 servings versus a 41.568 target). A one-adult, one-dinner/week plan can
+  reach 13 dinners against a 4.33-dinner target (3.00x) when spread across
+  chicken, pork, and turkey. Across the tested range meat never underfilled;
+  overfill is the systematic risk.
+- **High priority:** the "Plan bigger cuts so leftovers cover lunches" toggle
+  currently changes no chicken, pork, or turkey rotation. The on/off rotations
+  are identical because the leftover penalty only ties later cuts and the
+  stable sort preserves the original order. It only changes displayed leftover
+  and per-plate math.
+- **Medium priority:** the month summary pools fractional servings across
+  proteins while each protein section floors separately. In the default plan,
+  sections claim 5 chicken + 5 pork + 3 turkey dinners, but the month summary
+  claims 15 dinners from the same 48 servings.
+- **Medium priority edge case:** after manual removals, if remaining meat is
+  less than one family meal, `renderMonthSummary()` has positive servings but
+  no whole meal part and can render "covers about undefined".
+- **Low priority:** egg dozens use `Math.round(weekly * 4.33)`, so 1 dozen/week
+  produces 4 dozen (7.6% below 4.33) while meat always rounds upward. Visible
+  line-item rounding can also differ from the displayed subtotal by up to two
+  cents in the tested input range.
+- Passed checks: 4.33 weeks/month and 0.6 adult-equivalent per child are applied
+  consistently; serving/package multiplication, swaps, price-by-average-weight,
+  subtotal arithmetic, $100/$200 comparisons, and 2026 Rochester/Buffalo date
+  rules are mechanically correct. Serving yields and the 0.6 child factor remain
+  business assumptions requiring Brian's judgment, not independently sourced
+  facts.
+
+## Math fixes (2026-08-02, Codex, published)
+
+- Replaced independent per-protein target rounding with a whole-month family-meal
+  allocation, followed by package-aware filling. The default now supplies 42
+  dinner servings against a 41.568-serving target: 13 family dinners instead of
+  15. The default total is $515.20, including 5 dozen eggs.
+- The variety budget is now global (about one distinct cut per 2.5 requested
+  meals). Small varied plans no longer force one package from every selected
+  protein, and single-cut plans choose the practical package size with the least
+  overage.
+- The leftovers toggle now changes the automatic rotation: off uses portion cuts
+  when available; on may select whole birds, roasts, turkey breasts, or
+  spatchcock chickens. Those larger cuts remain available through swap/add even
+  when automatic leftovers are off.
+- Month totals now add the same whole family-meal counts shown in each protein
+  section. Sub-meal manual plans show a useful explanation instead of
+  `undefined`. Egg dozens round up to cover 4.33 weeks, and the subtotal now sums
+  the same rounded line prices shown to customers.
+- Added nine repeatable planner-math tests. An exhaustive run across every
+  allowed household size, meal count, nonzero protein-frequency combination,
+  and leftovers setting found no dinner or breakfast underfill and no visible
+  price mismatch. Worst dinner coverage was 1.386x target, caused by indivisible
+  two-serving packages, versus 3.002x before the fix. All 2026 route-date rules
+  still pass.
+- Browser smoke testing passed for the default order, leftovers off, and a tiny
+  one-adult plan. The page produced no browser warnings or errors.
+- Brian explicitly approved publishing the fixes on 2026-08-02. They were pushed
+  to `main`, which publishes the GitHub Pages planner used by the live embed.
+
 ## Open items
 
-- Not yet linked from parkviewfamilyfarm.com or announced to customers.
-  Ideas: link in monthly delivery email, GrazeCart nav, or QR at market.
+- Linked from parkviewfamilyfarm.com, but not yet announced to customers.
+  Ideas: link in the monthly delivery email or add a QR card at market.
 - Serving/leftover numbers in `META` are informed estimates. Brian should
   gut-check bacon (4 servings/lb) and the turkey rotation.
 - December 2026 Rochester date: rule says Dec 5 (matches the override
