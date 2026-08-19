@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-08-18T10:48:22Z",
+ "scraped_at": "2026-08-19T10:47:48Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -11,6 +11,21 @@
   "lamb"
  ],
  "products": [
+  {
+   "slug": "8-bird-chicken-bundle",
+   "name": "8-Bird Chicken Bundle",
+   "description": "8-bird bundle",
+   "category": "chicken",
+   "price": 7.02,
+   "price_unit": "lb",
+   "avg_weight_lb": 32.0,
+   "in_stock": true,
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/9fd715eb-d6c0-4166-bb8d-3cbbfaebe663.png",
+   "url": "https://parkviewfamilyfarm.com/store/product/8-bird-chicken-bundle",
+   "also_in": [
+    "freezer-bundles"
+   ]
+  },
   {
    "slug": "chicken-whole-bird",
    "name": "Chicken - Whole Bird",
@@ -46,6 +61,21 @@
    "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/f9ecbb99-c602-440c-a700-a38cc518304f.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-breast-boneless"
+  },
+  {
+   "slug": "chicken-cuts-bundle",
+   "name": "Chicken Cuts Bundle",
+   "description": "24-pack bundle",
+   "category": "chicken",
+   "price": 9.44,
+   "price_unit": "lb",
+   "avg_weight_lb": 36.0,
+   "in_stock": true,
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/99277c15-6f22-4428-92b3-c6649729218e.png",
+   "url": "https://parkviewfamilyfarm.com/store/product/chicken-cuts-bundle",
+   "also_in": [
+    "freezer-bundles"
+   ]
   },
   {
    "slug": "chicken-drumsticks",
@@ -120,46 +150,16 @@
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-wings"
   },
   {
-   "slug": "pork-essentials-box-15-lb-freezer-bundle",
-   "name": "Pork Essentials Box \u2013 15 lb Freezer Bundle",
-   "description": "The starter freezer box for pork you will actually use.",
+   "slug": "ground-pork-bundle",
+   "name": "Ground Pork Bundle",
+   "description": "20-pack bundle",
    "category": "freezer-bundles",
-   "price": 195.0,
-   "price_unit": "each",
-   "avg_weight_lb": null,
+   "price": 13.82,
+   "price_unit": "lb",
+   "avg_weight_lb": 22.32,
    "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/a25bd0fd-123d-4b7f-aa5b-987355803165.png",
-   "url": "https://parkviewfamilyfarm.com/store/product/pork-essentials-box-15-lb-freezer-bundle",
-   "also_in": [
-    "pork"
-   ]
-  },
-  {
-   "slug": "pork-family-box-25-lb-freezer-bundle",
-   "name": "Pork Family Box \u2013 25 lb Freezer Bundle",
-   "description": "A practical freezer stock-up for families who cook at home.",
-   "category": "freezer-bundles",
-   "price": 319.0,
-   "price_unit": "each",
-   "avg_weight_lb": null,
-   "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/02c92803-4256-4bf7-a62e-41ee0532e053.png",
-   "url": "https://parkviewfamilyfarm.com/store/product/pork-family-box-25-lb-freezer-bundle",
-   "also_in": [
-    "pork"
-   ]
-  },
-  {
-   "slug": "pork-freezer-builder-37-lb-stock-up-bundle",
-   "name": "Pork Freezer Builder \u2013 37 lb Stock-Up Bundle",
-   "description": "The bulk option for keeping pork on hand all month.",
-   "category": "freezer-bundles",
-   "price": 449.0,
-   "price_unit": "each",
-   "avg_weight_lb": null,
-   "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/179b7fed-e265-4087-992c-4ef872d74e1d.png",
-   "url": "https://parkviewfamilyfarm.com/store/product/pork-freezer-builder-37-lb-stock-up-bundle",
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/f4cf728a-11a6-42ae-8259-b99155655d07.png",
+   "url": "https://parkviewfamilyfarm.com/store/product/ground-pork-bundle",
    "also_in": [
     "pork"
    ]
