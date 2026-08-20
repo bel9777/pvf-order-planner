@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-08-19T10:47:48Z",
+ "scraped_at": "2026-08-20T10:49:26Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -20,7 +20,7 @@
    "price_unit": "lb",
    "avg_weight_lb": 32.0,
    "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/9fd715eb-d6c0-4166-bb8d-3cbbfaebe663.png",
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/ddfa6626-fb85-4a32-a96d-883ed3140c1f.png",
    "url": "https://parkviewfamilyfarm.com/store/product/8-bird-chicken-bundle",
    "also_in": [
     "freezer-bundles"
@@ -71,7 +71,7 @@
    "price_unit": "lb",
    "avg_weight_lb": 36.0,
    "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/99277c15-6f22-4428-92b3-c6649729218e.png",
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/99b51cf3-00fc-4add-b253-b244ac828d30.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-cuts-bundle",
    "also_in": [
     "freezer-bundles"
@@ -158,35 +158,11 @@
    "price_unit": "lb",
    "avg_weight_lb": 22.32,
    "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/f4cf728a-11a6-42ae-8259-b99155655d07.png",
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/0f210075-fc70-493a-ae03-39e558379802.png",
    "url": "https://parkviewfamilyfarm.com/store/product/ground-pork-bundle",
    "also_in": [
     "pork"
    ]
-  },
-  {
-   "slug": "farm-supporter-program-1-000-level",
-   "name": "Farm Supporter Program \u2014 $1,000 Level",
-   "description": "Support the season now and receive $1,200 in farm credit.",
-   "category": "farm-supporter-program",
-   "price": 1000.0,
-   "price_unit": "each",
-   "avg_weight_lb": null,
-   "in_stock": false,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/5f6026f9-ea20-4f6e-a51d-59fcaebdb29f.png",
-   "url": "https://parkviewfamilyfarm.com/store/product/farm-supporter-program-1-000-level"
-  },
-  {
-   "slug": "farm-supporter-program-500-level",
-   "name": "Farm Supporter Program \u2014 $500 Level",
-   "description": "Support the season now and receive $550 in farm credit.",
-   "category": "farm-supporter-program",
-   "price": 500.0,
-   "price_unit": "each",
-   "avg_weight_lb": null,
-   "in_stock": false,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/ae59505d-d982-41ab-ad3d-4a406222189f.png",
-   "url": "https://parkviewfamilyfarm.com/store/product/farm-supporter-program-500-level"
   },
   {
    "slug": "1-2-hog-pre-order-deposit",
