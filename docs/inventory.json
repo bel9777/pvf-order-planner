@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-08-25T10:51:30Z",
+ "scraped_at": "2026-08-26T10:53:10Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -376,7 +376,7 @@
    "price": 12.75,
    "price_unit": "lb",
    "avg_weight_lb": 1.3,
-   "in_stock": false,
+   "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/2221a345-b468-4510-81a8-9ae4bd09e800.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/shoulder-steaks"
   },
