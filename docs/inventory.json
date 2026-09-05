@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-09-04T14:23:44Z",
+ "scraped_at": "2026-09-05T13:28:05Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -460,7 +460,7 @@
    "price": 9.5,
    "price_unit": "lb",
    "avg_weight_lb": 2.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/3fb7ea70-ef76-48fb-9b4e-a4e526c005bf.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/turkey-legs"
   },
