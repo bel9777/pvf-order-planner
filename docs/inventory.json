@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-09-13T14:26:01Z",
+ "scraped_at": "2026-09-14T16:23:21Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -58,7 +58,7 @@
    "price": 13.25,
    "price_unit": "lb",
    "avg_weight_lb": 1.5,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/f9ecbb99-c602-440c-a700-a38cc518304f.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-breast-boneless"
   },
