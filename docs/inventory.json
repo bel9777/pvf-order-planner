@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-09-20T14:15:07Z",
+ "scraped_at": "2026-09-21T16:29:15Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -133,7 +133,7 @@
    "price": 12.5,
    "price_unit": "lb",
    "avg_weight_lb": 1.5,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/63494930-e9d1-4c80-ad43-2e7b88d5c258.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-thighs"
   },
@@ -280,7 +280,7 @@
    "price": 17.25,
    "price_unit": "lb",
    "avg_weight_lb": 1.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/537e4448-a67c-4e91-a33d-226188e3583a.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/irish-bacon"
   },
