@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-09-27T15:10:59Z",
+ "scraped_at": "2026-09-28T18:10:50Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -352,7 +352,7 @@
    "price": 14.75,
    "price_unit": "lb",
    "avg_weight_lb": 1.2,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/583d28dd-6b00-49f5-bb72-9e58d04aedb9.png",
    "url": "https://parkviewfamilyfarm.com/store/product/pork-chops"
   },
