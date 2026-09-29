@@ -121,13 +121,19 @@ const DEFAULT_FREQ = { chicken: 2, pork: 2, turkey: 1, lamb: 0 };
  * Delivery schedule rules (mirror the GrazeCart overrides):
  * Rochester = first Saturday (July shifts to second Saturday for the 4th),
  * Buffalo = third Saturday. Order deadline = Thursday before, 11:59 PM.
+ * One-off exceptions live in DATE_EXCEPTIONS ("zone:YYYY-M", month 1-12 → nth Saturday).
  * ------------------------------------------------------------------ */
+const DATE_EXCEPTIONS = {
+  "buffalo:2026-11": 2, // Nov 14, 2026: moved up a week for Thanksgiving turkey thaw/brine (Brian 2026-09-29)
+};
 function nthSaturday(year, month, n) {
   const first = new Date(year, month, 1);
   const offset = (6 - first.getDay() + 7) % 7;
   return new Date(year, month, 1 + offset + 7 * (n - 1));
 }
 function deliveryDateFor(zone, year, month) {
+  const exception = DATE_EXCEPTIONS[`${zone}:${year}-${month + 1}`];
+  if (exception) return nthSaturday(year, month, exception);
   if (zone === "rochester") return nthSaturday(year, month, month === 6 ? 2 : 1);
   return nthSaturday(year, month, 3);
 }
