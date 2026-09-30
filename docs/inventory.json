@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-09-29T16:31:52Z",
+ "scraped_at": "2026-09-30T16:25:32Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -429,16 +429,16 @@
    "url": "https://parkviewfamilyfarm.com/store/product/bone-in-turkey-breast"
   },
   {
-   "slug": "spatchcock-turkey",
-   "name": "Spatchcock Turkey",
-   "description": "Holiday turkey prepared for faster, more even roasting.",
+   "slug": "pre-order-turkey-deposit",
+   "name": "Thanksgiving Turkey Deposit",
+   "description": "$40 reserves one whole turkey. $8.25/lb by exact weight, less your deposit.",
    "category": "turkey",
-   "price": 7.5,
-   "price_unit": "lb",
-   "avg_weight_lb": 11.25,
+   "price": 40.0,
+   "price_unit": "each",
+   "avg_weight_lb": null,
    "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/0060b27d-d895-48ce-b096-225c75dfb1dc.jpg",
-   "url": "https://parkviewfamilyfarm.com/store/product/spatchcock-turkey"
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/c9ff629e-b218-4d91-ae8e-7a1bf9919537.jpg",
+   "url": "https://parkviewfamilyfarm.com/store/product/pre-order-turkey-deposit"
   },
   {
    "slug": "turkey-ground",
@@ -511,18 +511,6 @@
    "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/e36638c1-9a29-4a20-aad4-51fb002be0cc.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/turkey-wings"
-  },
-  {
-   "slug": "whole-turkey",
-   "name": "Whole Turkey",
-   "description": "A centerpiece bird for holidays and big family meals.",
-   "category": "turkey",
-   "price": 7.25,
-   "price_unit": "lb",
-   "avg_weight_lb": 13.0,
-   "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/01a9bffd-2126-418a-a826-28436eb18779.jpg",
-   "url": "https://parkviewfamilyfarm.com/store/product/whole-turkey"
   },
   {
    "slug": "chicken-eggs",
