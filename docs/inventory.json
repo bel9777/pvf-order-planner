@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-10-01T17:02:40Z",
+ "scraped_at": "2026-10-02T16:17:11Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -46,7 +46,7 @@
    "price": 11.25,
    "price_unit": "lb",
    "avg_weight_lb": 2.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/86539b9b-187a-402a-90b6-e3bcb5430151.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-breast-bone-in"
   },
@@ -70,7 +70,7 @@
    "price": 9.44,
    "price_unit": "lb",
    "avg_weight_lb": 36.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/99b51cf3-00fc-4add-b253-b244ac828d30.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-cuts-bundle",
    "also_in": [
@@ -520,7 +520,7 @@
    "price": 8.0,
    "price_unit": "each",
    "avg_weight_lb": null,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/d9a75b5b-0b8c-4024-83fb-05f65f9e1b8b.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-eggs"
   },
