@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-10-04T15:23:45Z",
+ "scraped_at": "2026-10-05T19:18:40Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -70,7 +70,7 @@
    "price": 9.44,
    "price_unit": "lb",
    "avg_weight_lb": 36.0,
-   "in_stock": false,
+   "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/99b51cf3-00fc-4add-b253-b244ac828d30.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-cuts-bundle",
    "also_in": [
@@ -208,7 +208,7 @@
    "price": 18.5,
    "price_unit": "lb",
    "avg_weight_lb": 1.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/8bf9a011-826a-4af5-b8bc-bf1c9ab02acc.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/canadian-bacon"
   },
@@ -520,7 +520,7 @@
    "price": 8.0,
    "price_unit": "each",
    "avg_weight_lb": null,
-   "in_stock": false,
+   "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/d9a75b5b-0b8c-4024-83fb-05f65f9e1b8b.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-eggs"
   },
