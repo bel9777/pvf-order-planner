@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-10-22T15:19:28Z",
+ "scraped_at": "2026-10-23T15:08:06Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -427,18 +427,6 @@
    "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/091bd123-13a3-4c1d-917e-1a57c7ff4055.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/bone-in-turkey-breast"
-  },
-  {
-   "slug": "pre-order-turkey-deposit",
-   "name": "Thanksgiving Turkey Deposit",
-   "description": "$40 reserves one whole turkey. $8.25/lb by exact weight, less your deposit.",
-   "category": "turkey",
-   "price": 40.0,
-   "price_unit": "each",
-   "avg_weight_lb": null,
-   "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/c9ff629e-b218-4d91-ae8e-7a1bf9919537.jpg",
-   "url": "https://parkviewfamilyfarm.com/store/product/pre-order-turkey-deposit"
   },
   {
    "slug": "turkey-ground",
