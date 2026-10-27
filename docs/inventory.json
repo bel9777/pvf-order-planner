@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-10-26T16:48:43Z",
+ "scraped_at": "2026-10-27T15:53:56Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -508,7 +508,7 @@
    "price": 8.0,
    "price_unit": "each",
    "avg_weight_lb": null,
-   "in_stock": false,
+   "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/d9a75b5b-0b8c-4024-83fb-05f65f9e1b8b.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-eggs"
   },
