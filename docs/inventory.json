@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-10-27T15:53:56Z",
+ "scraped_at": "2026-10-28T16:40:51Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -421,12 +421,36 @@
    "name": "Bone-in Turkey Breast",
    "description": "A smaller roast when you do not need the whole bird.",
    "category": "turkey",
-   "price": 11.0,
+   "price": 12.0,
    "price_unit": "lb",
-   "avg_weight_lb": 4.25,
+   "avg_weight_lb": 8.0,
    "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/091bd123-13a3-4c1d-917e-1a57c7ff4055.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/bone-in-turkey-breast"
+  },
+  {
+   "slug": "spatchcock-turkey",
+   "name": "Thanksgiving Turkey (Spatchcocked)",
+   "description": "Split, flattened, and frozen. Roasts in about half the time.",
+   "category": "turkey",
+   "price": 8.75,
+   "price_unit": "lb",
+   "avg_weight_lb": 16.5,
+   "in_stock": true,
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/0060b27d-d895-48ce-b096-225c75dfb1dc.jpg",
+   "url": "https://parkviewfamilyfarm.com/store/product/spatchcock-turkey"
+  },
+  {
+   "slug": "whole-turkey",
+   "name": "Thanksgiving Turkey (Whole)",
+   "description": "A frozen whole bird for your Thanksgiving table.",
+   "category": "turkey",
+   "price": 8.25,
+   "price_unit": "lb",
+   "avg_weight_lb": 17.0,
+   "in_stock": true,
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/01a9bffd-2126-418a-a826-28436eb18779.jpg",
+   "url": "https://parkviewfamilyfarm.com/store/product/whole-turkey"
   },
   {
    "slug": "turkey-ground",
@@ -447,8 +471,8 @@
    "category": "turkey",
    "price": 9.5,
    "price_unit": "lb",
-   "avg_weight_lb": 2.0,
-   "in_stock": false,
+   "avg_weight_lb": 3.0,
+   "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/3fb7ea70-ef76-48fb-9b4e-a4e526c005bf.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/turkey-legs"
   },
@@ -471,7 +495,7 @@
    "category": "turkey",
    "price": 3.25,
    "price_unit": "lb",
-   "avg_weight_lb": 4.75,
+   "avg_weight_lb": 4.1,
    "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/e13c4441-fb87-4475-828f-0ca4b9bd8932.png",
    "url": "https://parkviewfamilyfarm.com/store/product/turkey-stock-bag"
@@ -483,8 +507,8 @@
    "category": "turkey",
    "price": 10.5,
    "price_unit": "lb",
-   "avg_weight_lb": 2.25,
-   "in_stock": false,
+   "avg_weight_lb": 4.0,
+   "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/a00b4c50-93f7-4bf7-a8ad-ff346375be15.webp",
    "url": "https://parkviewfamilyfarm.com/store/product/turkey-thighs"
   },
@@ -495,7 +519,7 @@
    "category": "turkey",
    "price": 9.0,
    "price_unit": "lb",
-   "avg_weight_lb": 1.75,
+   "avg_weight_lb": 3.0,
    "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/e36638c1-9a29-4a20-aad4-51fb002be0cc.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/turkey-wings"
