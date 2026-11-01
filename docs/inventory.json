@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-10-31T15:45:10Z",
+ "scraped_at": "2026-11-01T16:49:25Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -58,7 +58,7 @@
    "price": 13.25,
    "price_unit": "lb",
    "avg_weight_lb": 1.5,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/f9ecbb99-c602-440c-a700-a38cc518304f.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-breast-boneless"
   },
@@ -150,6 +150,36 @@
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-wings"
   },
   {
+   "slug": "1-2-hog-pre-order-deposit",
+   "name": "1/2 Hog Pre-Order Deposit",
+   "description": "$100 holds a half. $8.00/lb hanging weight, butcher included. A 90 lb half is about $720 and 60 lb of frozen pork.",
+   "category": "freezer-bundles",
+   "price": 100.0,
+   "price_unit": "each",
+   "avg_weight_lb": null,
+   "in_stock": true,
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/42d80d21-c584-49ec-b525-f9502775305f.jpg",
+   "url": "https://parkviewfamilyfarm.com/store/product/1-2-hog-pre-order-deposit",
+   "also_in": [
+    "pork"
+   ]
+  },
+  {
+   "slug": "whole-hog-pre-order-deposit",
+   "name": "Whole Hog Pre-Order Deposit",
+   "description": "$200 holds a whole hog. $7.80/lb hanging weight, butcher included. A 180 lb hog is about $1,404 and 120 lb of frozen pork.",
+   "category": "freezer-bundles",
+   "price": 200.0,
+   "price_unit": "each",
+   "avg_weight_lb": null,
+   "in_stock": true,
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/43db0bf1-21b4-4cb8-8421-2f57fddcfb17.jpg",
+   "url": "https://parkviewfamilyfarm.com/store/product/whole-hog-pre-order-deposit",
+   "also_in": [
+    "pork"
+   ]
+  },
+  {
    "slug": "ground-pork-bundle",
    "name": "Ground Pork Bundle",
    "description": "20-pack bundle",
@@ -163,18 +193,6 @@
    "also_in": [
     "pork"
    ]
-  },
-  {
-   "slug": "1-2-hog-pre-order-deposit",
-   "name": "1/2 Hog Pre-Order Deposit",
-   "description": "Reserve your share before the next pork harvest fills up.",
-   "category": "pork",
-   "price": 100.0,
-   "price_unit": "each",
-   "avg_weight_lb": null,
-   "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/3fda2305-e764-4822-8d6f-64a30ed49293.png",
-   "url": "https://parkviewfamilyfarm.com/store/product/1-2-hog-pre-order-deposit"
   },
   {
    "slug": "pork-smoked-bacon",
@@ -196,7 +214,7 @@
    "price": 12.75,
    "price_unit": "lb",
    "avg_weight_lb": 3.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/de1d3da3-00f7-4c14-a40d-edd65c594afe.png",
    "url": "https://parkviewfamilyfarm.com/store/product/pork-butt-roast"
   },
@@ -532,7 +550,7 @@
    "price": 8.0,
    "price_unit": "each",
    "avg_weight_lb": null,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/d9a75b5b-0b8c-4024-83fb-05f65f9e1b8b.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-eggs"
   },
