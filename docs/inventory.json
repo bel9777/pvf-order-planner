@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-11-08T16:42:09Z",
+ "scraped_at": "2026-11-09T20:47:17Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -346,7 +346,7 @@
    "price": 13.75,
    "price_unit": "lb",
    "avg_weight_lb": 2.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/8452dae5-ab28-4fb1-b924-21e3ace05044.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/pork-belly-sliced"
   },
@@ -550,7 +550,7 @@
    "price": 8.0,
    "price_unit": "each",
    "avg_weight_lb": null,
-   "in_stock": false,
+   "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/d9a75b5b-0b8c-4024-83fb-05f65f9e1b8b.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-eggs"
   },
