@@ -125,6 +125,7 @@ const DEFAULT_FREQ = { chicken: 2, pork: 2, turkey: 1, lamb: 0 };
  * ------------------------------------------------------------------ */
 const DATE_EXCEPTIONS = {
   "buffalo:2026-11": 2, // Nov 14, 2026: moved up a week for Thanksgiving turkey thaw/brine (Brian 2026-09-29)
+  "rochester:2027-1": 2, // Jan 9, 2027: skips New Year weekend, order by Thu Jan 7 (Brian 2026-11-10)
 };
 function nthSaturday(year, month, n) {
   const first = new Date(year, month, 1);
