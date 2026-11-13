@@ -184,8 +184,12 @@ function metaFor(p) {
 }
 
 function unitPrice(p) {
-  if (p.price == null) return 0;
-  return p.price_unit === "lb" ? p.price * (p.avg_weight_lb || 1) : p.price;
+  if (!Number.isFinite(p.price) || p.price <= 0) return null;
+  if (p.price_unit === "lb") {
+    if (!Number.isFinite(p.avg_weight_lb) || p.avg_weight_lb <= 0) return null;
+    return p.price * p.avg_weight_lb;
+  }
+  return p.price;
 }
 
 function roundMoney(value) {
@@ -196,7 +200,7 @@ function groupProducts(group, { inStockOnly = true } = {}) {
   return Object.values(inventory)
     .filter((p) => metaFor(p).group === group)
     .filter((p) => !inStockOnly || p.in_stock)
-    .sort((a, b) => (metaFor(a).rotate ?? 9) - (metaFor(b).rotate ?? 9) || unitPrice(a) - unitPrice(b));
+    .sort((a, b) => (metaFor(a).rotate ?? 9) - (metaFor(b).rotate ?? 9) || (unitPrice(a) ?? Infinity) - (unitPrice(b) ?? Infinity));
 }
 
 function rotationFor(group, preferLeftovers) {
@@ -258,7 +262,7 @@ function fillRotation(rotation, servingsNeeded) {
       const distance = Math.abs(remaining - sa) - Math.abs(remaining - sb);
       if (distance) return distance;
       const finishes = Number(sb >= remaining) - Number(sa >= remaining);
-      return finishes || unitPrice(a) - unitPrice(b);
+      return finishes || (unitPrice(a) ?? Infinity) - (unitPrice(b) ?? Infinity);
     })[0];
     units.set(p.slug, units.get(p.slug) + 1);
     const servings = metaFor(p).servings || 1;
@@ -365,11 +369,17 @@ const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
 
 function linePrice(line) {
-  return roundMoney(unitPrice(inventory[line.slug]) * line.qty);
+  const price = unitPrice(inventory[line.slug]);
+  return price == null ? null : roundMoney(price * line.qty);
 }
 
 function orderTotal(lines = planLines) {
-  return roundMoney(lines.reduce((sum, line) => sum + linePrice(line), 0));
+  const prices = lines.map(linePrice);
+  return prices.some((price) => price == null) ? null : roundMoney(prices.reduce((sum, price) => sum + price, 0));
+}
+
+function priceLabel(price) {
+  return price == null ? "Price unavailable" : `$${price.toFixed(2)}`;
 }
 
 function renderZones() {
@@ -503,7 +513,7 @@ function renderLine(line) {
   const weightTxt = p.avg_weight_lb
     ? `~${(p.avg_weight_lb * line.qty).toFixed(1)} lb total · `
     : "";
-  const priceTxt = p.price != null
+  const priceTxt = Number.isFinite(p.price) && p.price > 0
     ? p.price_unit === "lb" ? `$${p.price.toFixed(2)}/lb` : `$${p.price.toFixed(2)} each`
     : "";
   el.innerHTML = `
@@ -518,7 +528,7 @@ function renderLine(line) {
       <div class="order-item__name"><a href="${p.url}" target="_blank" rel="noopener">${p.name}</a></div>
       <div class="order-item__meta">${weightTxt}${priceTxt}</div>
     </div>
-    <span class="order-item__price">$${linePrice(line).toFixed(2)}</span>
+    <span class="order-item__price">${priceLabel(linePrice(line))}</span>
     <div class="order-item__actions">
       <button class="swap-btn" data-slug="${line.slug}">swap</button>
       <button class="remove-btn" data-slug="${line.slug}">remove</button>
@@ -528,13 +538,18 @@ function renderLine(line) {
 
 function renderTotal() {
   const total = orderTotal();
-  $("#order-total").textContent = `$${total.toFixed(2)}`;
+  $("#order-total").textContent = total == null ? "Estimate unavailable" : priceLabel(total);
   renderMonthSummary();
   const fill = $("#meter-fill");
   fill.style.width = Math.min(100, (total / 250) * 100) + "%";
   fill.classList.toggle("meter__fill--under", total < 100);
   const status = $("#delivery-status");
-  if (total >= 200) {
+  if (total == null) {
+    fill.style.width = "0%";
+    fill.classList.toggle("meter__fill--under", false);
+    status.textContent = "Some prices are unavailable. Check the store for your total and delivery eligibility.";
+    status.className = "delivery-status delivery-status--warn";
+  } else if (total >= 200) {
     status.textContent = "You're over $200. Delivery is free.";
     status.className = "delivery-status delivery-status--ok";
   } else if (total >= 100) {
@@ -588,17 +603,23 @@ function renderMonthSummary() {
   if (dinners) parts.push(`${dinners} dinner${dinners === 1 ? "" : "s"}`);
   if (breakfasts) parts.push(`${breakfasts} breakfast${breakfasts === 1 ? "" : "s"}`);
   if (lunches) parts.push(`${lunches} lunch${lunches === 1 ? "" : "es"} of leftovers`);
+  const meatPricesKnown = planLines
+    .filter((line) => DINNER_GROUPS.includes(line.group) || line.group === "breakfast")
+    .every((line) => linePrice(line) != null);
   const plate = meatCost / plates;
+  const plateText = meatPricesKnown
+    ? `The meat works out to about <strong>$${plate.toFixed(2)} a plate</strong>.`
+    : "Cost per plate is unavailable until all meat prices are known.";
   if (!parts.length) {
     el.innerHTML = `This list has some meat, but not enough for a full family meal yet.
-      The meat works out to about <strong>$${plate.toFixed(2)} a plate</strong>.`;
+      ${plateText}`;
     return;
   }
   const list = parts.length > 1
     ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1]
     : parts[0];
   el.innerHTML = `One delivery covers about ${list} for your family this month.
-    The meat works out to about <strong>$${plate.toFixed(2)} a plate</strong>.`;
+    ${plateText}`;
 }
 
 function addCandidates(group) {
@@ -623,7 +644,7 @@ function openAddMenu(btn, group) {
     }
     for (const p of candidates) {
       const b = document.createElement("button");
-      b.innerHTML = `${p.name} <span class="swap-price">$${unitPrice(p).toFixed(2)}</span>`;
+      b.innerHTML = `${p.name} <span class="swap-price">${priceLabel(unitPrice(p))}</span>`;
       b.addEventListener("click", () => {
         planLines.push(makeLine(p, 1));
         renderResults();
@@ -646,7 +667,7 @@ function openSwapMenu(afterEl, line) {
     const covered = line.qty * line.servingsEach;
     const qty = Math.max(1, Math.ceil(covered / (m.servings || 1)));
     const btn = document.createElement("button");
-    btn.innerHTML = `${qty}&times; ${alt.name} <span class="swap-price">$${roundMoney(unitPrice(alt) * qty).toFixed(2)}</span>`;
+    btn.innerHTML = `${qty}&times; ${alt.name} <span class="swap-price">${priceLabel(linePrice(makeLine(alt, qty)))}</span>`;
     btn.addEventListener("click", () => {
       Object.assign(line, makeLine(alt, qty));
       renderResults();

@@ -12,13 +12,16 @@ source += `
 globalThis.__test = {
   WEEKS_PER_MONTH, KID_APPETITE, DEFAULT_FREQ, state,
   metaFor, rotationFor, makeLine, buildPlan, linePrice, orderTotal,
-  renderMonthSummary, deliveryDateFor,
+  renderMonthSummary, renderTotal, renderLine, unitPrice, priceLabel, deliveryDateFor,
   setInventory(value) { inventory = value; },
   setPlanLines(value) { planLines = value; },
 };
 `;
 
 const monthSummary = { textContent: "", innerHTML: "" };
+const elements = Object.fromEntries(["#order-total", "#delivery-status", "#meter-fill"].map(key => [key, {
+  textContent: "", style: {}, classList: { toggle() {} },
+}]));
 const context = vm.createContext({
   console,
   Date,
@@ -28,9 +31,10 @@ const context = vm.createContext({
   document: {
     querySelector(selector) {
       if (selector === "#month-summary") return monthSummary;
-      return null;
+      return elements[selector] || null;
     },
     querySelectorAll() { return []; },
+    createElement() { return { dataset: {}, innerHTML: "" }; },
   },
 });
 vm.runInContext(source, context, { filename: APP_PATH.pathname });
@@ -164,6 +168,13 @@ test("egg planning always covers the 4.33-week target", () => {
 });
 
 test("displayed line prices reconcile exactly to the displayed subtotal", () => {
+  // Fixed price fixtures keep rounding assertions independent of daily prices.
+  const pricedInventory = { ...inventory,
+    "jowl-bacon": { ...inventory["jowl-bacon"], price: 13.03, price_unit: "lb", avg_weight_lb: .9 },
+    "chicken-leg-quarters": { ...inventory["chicken-leg-quarters"], price: 7.5, price_unit: "lb", avg_weight_lb: 1.25 },
+    "uncured-pork-hot-dogs": { ...inventory["uncured-pork-hot-dogs"], price: 10, price_unit: "each" },
+  };
+  planner.setInventory(pricedInventory);
   const lines = [
     planner.makeLine(inventory["jowl-bacon"], 1),
     planner.makeLine(inventory["chicken-leg-quarters"], 3),
@@ -172,6 +183,7 @@ test("displayed line prices reconcile exactly to the displayed subtotal", () => 
   assert.equal(planner.linePrice(lines[0]), 11.73);
   const sum = Math.round(lines.reduce((total, line) => total + planner.linePrice(line), 0) * 100) / 100;
   assert.equal(planner.orderTotal(lines), sum);
+  planner.setInventory(inventory);
 });
 
 test("representative allowed-input sweep never underfills and avoids severe overfill", () => {
@@ -218,4 +230,45 @@ test("2026 delivery-date rules remain unchanged", () => {
   assert.equal(julyRochester.getDate(), 11);
   assert.equal(augustRochester.getDate(), 1);
   assert.equal(augustBuffalo.getDate(), 15);
+});
+
+
+test("missing or invalid prices never become zero estimates or delivery claims", () => {
+  setState();
+  const slug = "chicken-leg-quarters";
+  for (const price of [null, undefined, NaN, 0, -1]) {
+    planner.setInventory({ ...inventory, [slug]: { ...inventory[slug], price } });
+    const lines = [planner.makeLine(inventory[slug], 3)];
+    planner.setPlanLines(lines);
+    assert.equal(planner.linePrice(lines[0]), null);
+    assert.equal(planner.orderTotal(), null);
+    assert.match(planner.renderLine(lines[0]).innerHTML, /Price unavailable/);
+    planner.renderTotal();
+    assert.equal(elements["#order-total"].textContent, "Estimate unavailable");
+    assert.match(elements["#delivery-status"].textContent, /Check the store/);
+    assert.doesNotMatch(elements["#delivery-status"].textContent, /short|cleared|is free/);
+    assert.doesNotMatch(monthSummary.innerHTML, /\$0|\$NaN/);
+    assert.match(monthSummary.innerHTML, /Cost per plate is unavailable/);
+  }
+  planner.setInventory(inventory);
+});
+
+test("per-pound estimates require a valid package weight", () => {
+  for (const weight of [null, 0, -1, NaN]) {
+    assert.equal(planner.unitPrice({ price: 7.5, price_unit: "lb", avg_weight_lb: weight }), null);
+  }
+  assert.equal(planner.unitPrice({ price: 7.5, price_unit: "lb", avg_weight_lb: 4 }), 30);
+  assert.equal(planner.unitPrice({ price: 8, price_unit: "each", avg_weight_lb: null }), 8);
+});
+
+test("known totals retain delivery thresholds and recover after unavailable prices", () => {
+  const slug = "chicken-leg-quarters";
+  planner.setInventory({ ...inventory, [slug]: { ...inventory[slug], price: 50, price_unit: "each" } });
+  for (const [qty, message] of [[1, /short/], [2, /cleared/], [4, /Delivery is free/]]) {
+    planner.setPlanLines([planner.makeLine(inventory[slug], qty)]);
+    planner.renderTotal();
+    assert.equal(elements["#order-total"].textContent, `$${(qty * 50).toFixed(2)}`);
+    assert.match(elements["#delivery-status"].textContent, message);
+  }
+  planner.setInventory(inventory);
 });

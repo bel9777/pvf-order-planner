@@ -34,5 +34,6 @@ order list against live store inventory.
 ```
 py scraper/scrape.py          # refresh inventory
 py -m http.server 8642 --directory docs
+python -m unittest discover -s tests -p 'test_*.py'
 node --test tests/planner-math.test.mjs
 ```

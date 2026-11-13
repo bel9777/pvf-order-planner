@@ -1,6 +1,33 @@
 # Current state — PVF Order Planner
 
-Updated: 2026-11-10 (Rochester Jan 2027 date exception, Claude)
+Updated: 2026-11-13 (price import repair prepared; publication pending)
+
+## 2026-11-13: Price import repair prepared, not yet published
+
+- GrazeCart now supplies prices in `meta[itemprop=price]` content and the
+  per-pound unit in a separate price-unit element. The scraper reads both,
+  while retaining the older inline-price fallback.
+- The scraper refuses to overwrite inventory if any food product has no
+  positive price or a per-pound product lacks a usable average weight.
+  Failed scrapes preserve the previous file and return nonzero before the
+  daily workflow's commit step.
+- Unknown prices render as unavailable in lines, add/swap menus, order totals
+  and meat cost per plate. Incomplete totals do not claim delivery eligibility
+  or an amount needed to reach the minimum.
+- A local live-store scrape restored prices for all 49 products. The generated
+  inventory is included with this repair; it was not hand-edited.
+- Verification: 6 offline scraper tests and all 12 planner tests pass,
+  including the representative meal-allocation sweep and missing-price/
+  threshold regression cases. JavaScript syntax and whitespace checks pass.
+  Added a GitHub Actions regression-test workflow for PRs and main pushes.
+- Independent diff review found no blocking issues; its empty-unit fallback
+  concern was fixed and covered by a test. Browser smoke testing could not run:
+  Chromium cannot create its process socket in this environment, and the
+  cloud browser cannot reach the local preview. No checkout was exercised.
+- Brian approved the repair. Publishing to main still needs his explicit
+  confirmation under this repository's guide. Live deployment and post-deploy
+  health verification are pending; the production site remains unchanged.
+
 
 ## 2026-11-10: Rochester January 2027 is Sat Jan 9
 
