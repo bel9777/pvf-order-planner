@@ -9,6 +9,7 @@ plus a text fallback, since GrazeCart themes vary in how they badge it.
 """
 
 import json
+import math
 import re
 import sys
 import time
@@ -85,11 +86,16 @@ def parse_products(html: str, category: str) -> list[dict]:
         price = None
         price_unit = "each"
         if price_el:
-            raw = price_el.get_text(" ", strip=True)
-            m = re.search(r"([\d,]+\.?\d*)", raw)
-            if m:
-                price = float(m.group(1).replace(",", ""))
-            if "/lb" in raw:
+            # GrazeCart now puts the machine price in a meta content attribute.
+            raw = price_el.get("content") or price_el.get_text(" ", strip=True)
+            match = re.fullmatch(r"\s*\$?([\d,]+(?:\.\d+)?)\s*(?:/\s*lb\.?)?\s*", raw, re.I)
+            if match:
+                value = float(match.group(1).replace(",", ""))
+                if math.isfinite(value) and value > 0:
+                    price = value
+            unit_el = section.select_one(".productListing__price_unit")
+            unit_text = (unit_el.get_text(" ", strip=True) if unit_el else "") or raw
+            if re.search(r"(?:/|per\s+)\s*(?:lb|pound)\b", unit_text, re.I):
                 price_unit = "lb"
 
         in_stock = True
@@ -139,6 +145,14 @@ def main() -> int:
     food = [p for p in all_products if p["category"] not in NON_FOOD_CATEGORIES]
     if len(food) < 10:
         print(f"ERROR: only {len(food)} food products scraped; aborting.", file=sys.stderr)
+        return 1
+
+    # Do not replace the last good snapshot with missing or unusable prices.
+    invalid = [p["slug"] for p in food if
+               p["price"] is None or
+               (p["price_unit"] == "lb" and not (p["avg_weight_lb"] and p["avg_weight_lb"] > 0))]
+    if invalid:
+        print(f"ERROR: missing price or per-pound weight for {', '.join(invalid)}; aborting.", file=sys.stderr)
         return 1
 
     payload = {
