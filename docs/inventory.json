@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-11-14T16:37:25Z",
+ "scraped_at": "2026-11-15T17:13:40Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -454,7 +454,7 @@
    "price": null,
    "price_unit": "each",
    "avg_weight_lb": 16.5,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/0060b27d-d895-48ce-b096-225c75dfb1dc.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/spatchcock-turkey"
   },
@@ -466,7 +466,7 @@
    "price": null,
    "price_unit": "each",
    "avg_weight_lb": 17.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/01a9bffd-2126-418a-a826-28436eb18779.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/whole-turkey"
   },
