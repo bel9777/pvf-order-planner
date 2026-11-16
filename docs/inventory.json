@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-11-15T17:13:40Z",
+ "scraped_at": "2026-11-16T20:30:54Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -310,7 +310,7 @@
    "price": null,
    "price_unit": "each",
    "avg_weight_lb": 0.7,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/aa67ccef-7a88-4d98-bf57-bef1ea769937.webp",
    "url": "https://parkviewfamilyfarm.com/store/product/jowl-bacon"
   },
@@ -550,7 +550,7 @@
    "price": null,
    "price_unit": "each",
    "avg_weight_lb": null,
-   "in_stock": false,
+   "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/d9a75b5b-0b8c-4024-83fb-05f65f9e1b8b.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-eggs"
   },
