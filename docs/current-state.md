@@ -1,6 +1,18 @@
 # Current state — PVF Order Planner
 
-Updated: 2026-11-10 (Rochester Jan 2027 date exception, Claude)
+Updated: 2026-11-17 (scraper price fix, Claude)
+
+## 2026-11-17: prices were null for a week; scraper fixed
+
+- From the 11-11 scrape on, every `price` in `inventory.json` was null: GrazeCart moved
+  the price into `<meta itemprop="price" content="...">`, so the text read came back
+  empty. `parse_products` now reads the `content` attribute first and takes `/lb` from
+  the offers block (commit 20c5420, Brian's yes).
+- Verified: manual scrape run 44191902530 published 49 products, 0 null prices
+  (pork chops 14.75/lb, half hog deposit 100 each); health check run 44192143585
+  passed and closed issue #5.
+- Lesson: the health check DID fail from 11-11 and opened issue #5, but nobody reads
+  GitHub issues. The failure surfaced only when the Tuesday Draft crashed on 11-17.
 
 ## 2026-11-10: Rochester January 2027 is Sat Jan 9
 
