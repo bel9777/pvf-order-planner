@@ -85,11 +85,15 @@ def parse_products(html: str, category: str) -> list[dict]:
         price = None
         price_unit = "each"
         if price_el:
-            raw = price_el.get_text(" ", strip=True)
+            # (Fixed 2026-11-17; prices were null from 11-11.) GrazeCart moved the price into <meta itemprop="price" content="12.75"> (Nov 2026);
+            # older markup had it as visible text. Read the attribute first, then the text.
+            raw = price_el.get("content") or price_el.get_text(" ", strip=True)
             m = re.search(r"([\d,]+\.?\d*)", raw)
             if m:
                 price = float(m.group(1).replace(",", ""))
-            if "/lb" in raw:
+            offers_el = section.select_one("[itemprop=offers]")
+            unit_text = offers_el.get_text(" ", strip=True) if offers_el else raw
+            if "/lb" in unit_text or "/lb" in raw:
                 price_unit = "lb"
 
         in_stock = True
