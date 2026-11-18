@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-11-17T22:38:02Z",
+ "scraped_at": "2026-11-18T18:52:13Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -152,7 +152,7 @@
   {
    "slug": "1-2-hog-pre-order-deposit",
    "name": "1/2 Hog Pre-Order Deposit",
-   "description": "$100 holds a half. Starting at $7.60/lb hanging weight, butcher included. About 60 lb of pork for your freezer.",
+   "description": "$100 holds a half, refundable until your reserve-by date. Starting at $7.60/lb hanging weight, butcher included. About 60 lb of pork for your freezer.",
    "category": "freezer-bundles",
    "price": 100.0,
    "price_unit": "each",
@@ -167,7 +167,7 @@
   {
    "slug": "whole-hog-pre-order-deposit",
    "name": "Whole Hog Pre-Order Deposit",
-   "description": "$200 holds a whole. Starting at $7.40/lb hanging weight, butcher included. About 120 lb of pork for your freezer.",
+   "description": "$200 holds a whole, refundable until your reserve-by date. Starting at $7.40/lb hanging weight, butcher included. About 120 lb of pork for your freezer.",
    "category": "freezer-bundles",
    "price": 200.0,
    "price_unit": "each",
@@ -181,14 +181,14 @@
   },
   {
    "slug": "ground-pork-bundle",
-   "name": "Ground Pork Bundle",
+   "name": "Sausage Bundle",
    "description": "20-pack bundle",
    "category": "freezer-bundles",
    "price": 13.82,
    "price_unit": "lb",
    "avg_weight_lb": 22.32,
    "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/0f210075-fc70-493a-ae03-39e558379802.png",
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/933ea74d-c6f5-44ef-a828-ef505630e852.png",
    "url": "https://parkviewfamilyfarm.com/store/product/ground-pork-bundle",
    "also_in": [
     "pork"
@@ -197,7 +197,7 @@
   {
    "slug": "pork-smoked-bacon",
    "name": "Bacon (traditional)",
-   "description": "Bacon from pasture-raised, corn-and-soy-free Idaho Pasture Pigs. Clean-flavored. Worth building breakfast around. $19/lb.",
+   "description": "Thick-cut bacon from our Idaho Pasture Pigs. Worth building breakfast around.",
    "category": "pork",
    "price": 19.0,
    "price_unit": "lb",
@@ -221,7 +221,7 @@
   {
    "slug": "canadian-bacon",
    "name": "Canadian Bacon",
-   "description": "Canadian bacon from the same pigs as the traditional. Leaner cut for eggs, sandwiches, skillets. $18.50/lb.",
+   "description": "Canadian bacon from the same pigs as our traditional bacon. Leaner, for eggs, sandwiches and skillets.",
    "category": "pork",
    "price": 18.5,
    "price_unit": "lb",
@@ -377,7 +377,7 @@
   {
    "slug": "smoked-pork-chops",
    "name": "Pork Chops - Smoked",
-   "description": "A quicker dinner cut with smokehouse flavor already built in.",
+   "description": "Smoked bone-in chops. Cook them like fresh chops.",
    "category": "pork",
    "price": 18.25,
    "price_unit": "lb",
@@ -425,7 +425,7 @@
   {
    "slug": "uncured-pork-hot-dogs",
    "name": "Uncured Pork Hot Dogs (No Nitrates or Nitrites Added)",
-   "description": "A cleaner cookout staple made for easy family dinners.",
+   "description": "Pork hot dogs for the grill or a quick dinner.",
    "category": "pork",
    "price": 17.75,
    "price_unit": "lb",
@@ -545,7 +545,7 @@
   {
    "slug": "chicken-eggs",
    "name": "Pasture-Raised Corn & Soy Free Eggs \u2014 Dozen",
-   "description": "Pasture-raised, corn-and-soy-free eggs. A dozen real eggs. $8.",
+   "description": "Pasture-raised, corn and soy free eggs, by the dozen.",
    "category": "eggs",
    "price": 8.0,
    "price_unit": "each",
