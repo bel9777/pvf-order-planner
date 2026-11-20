@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-11-19T19:00:21Z",
+ "scraped_at": "2026-11-20T18:37:42Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -150,6 +150,21 @@
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-wings"
   },
   {
+   "slug": "ground-pork-bundle",
+   "name": "Sausage Bundle",
+   "description": "20-pack bundle",
+   "category": "freezer-bundles",
+   "price": 13.82,
+   "price_unit": "lb",
+   "avg_weight_lb": 22.32,
+   "in_stock": true,
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/933ea74d-c6f5-44ef-a828-ef505630e852.png",
+   "url": "https://parkviewfamilyfarm.com/store/product/ground-pork-bundle",
+   "also_in": [
+    "pork"
+   ]
+  },
+  {
    "slug": "1-2-hog-pre-order-deposit",
    "name": "1/2 Hog Pre-Order Deposit",
    "description": "$100 holds a half, refundable until your reserve-by date. Starting at $7.60/lb hanging weight, butcher included. About 60 lb of pork for your freezer.",
@@ -175,21 +190,6 @@
    "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/43db0bf1-21b4-4cb8-8421-2f57fddcfb17.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/whole-hog-pre-order-deposit",
-   "also_in": [
-    "pork"
-   ]
-  },
-  {
-   "slug": "ground-pork-bundle",
-   "name": "Sausage Bundle",
-   "description": "20-pack bundle",
-   "category": "freezer-bundles",
-   "price": 13.82,
-   "price_unit": "lb",
-   "avg_weight_lb": 22.32,
-   "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/933ea74d-c6f5-44ef-a828-ef505630e852.png",
-   "url": "https://parkviewfamilyfarm.com/store/product/ground-pork-bundle",
    "also_in": [
     "pork"
    ]
