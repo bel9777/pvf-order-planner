@@ -171,6 +171,79 @@ const state = {
 let inventory = null;   // slug -> product (in-stock knowledge included)
 let planLines = [];     // current built plan
 let planBuilt = false;  // once true, input changes rebuild the plan live
+let starterMode = false;
+let inventoryUpdatedAt;
+
+const STARTER_ORDERS = [
+  { name: "A first order", minimum: 100, items: [
+    ["chicken-whole-bird", 2], ["chicken-eggs", 2], ["pork-smoked-bacon", 1], ["pork-breakfast-sausage-links", 2],
+  ] },
+  { name: "A larger order", minimum: 200, items: [
+    ["chicken-whole-bird", 4], ["chicken-eggs", 3], ["pork-smoked-bacon", 2], ["pork-breakfast-sausage-links", 3],
+  ] },
+];
+const STARTER_NAMES = {
+  "chicken-whole-bird": "whole chickens", "chicken-eggs": "dozen eggs",
+  "pork-smoked-bacon": "bacon", "pork-breakfast-sausage-links": "breakfast sausage",
+};
+
+function starterList(order) {
+  // Match the daily inventory monitor's 30-hour window before quoting a basket.
+  const age = Date.now() - inventoryUpdatedAt;
+  if (!Number.isFinite(age) || age > 30 * 3600000 || age < 0) return null;
+  const lines = [];
+  for (const [slug, qty] of order.items) {
+    const item = inventory[slug];
+    if (!item?.in_stock || !(item.price > 0) || (item.price_unit === "lb" && !(item.avg_weight_lb > 0))) return null;
+    lines.push(makeLine(item, qty));
+  }
+  return orderTotal(lines) >= order.minimum ? lines : null;
+}
+
+function renderStarterOptions() {
+  const wrap = $("#starter-options");
+  wrap.replaceChildren();
+  for (const order of STARTER_ORDERS) {
+    const card = document.createElement("div");
+    card.className = "starter-card";
+    const contents = order.items.map(([slug, qty]) => {
+      const packs = slug.startsWith("pork-") ? (qty === 1 ? " pack of " : " packs of ") : " ";
+      return qty + packs + STARTER_NAMES[slug];
+    }).join(", ");
+    const lines = starterList(order);
+    const total = lines ? orderTotal(lines) : 0;
+    const estimate = lines
+      ? "About $" + total.toFixed(2) + (total >= 200 ? " · free delivery" : " + $20 delivery")
+      : "This list is unavailable with the current stock and prices.";
+    card.innerHTML = `<h3>${order.name}</h3><p>${contents}.</p><strong>${estimate}</strong><br>`;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = lines ? "Use this order" : "Unavailable";
+    button.setAttribute("aria-label", lines ? "Use " + order.name.toLowerCase() : order.name + " unavailable");
+    button.disabled = !lines;
+    button.addEventListener("click", () => {
+      const current = starterList(order);
+      if (!current) { renderStarterOptions(); return; }
+      planLines = current;
+      planBuilt = true;
+      renderResults(true);
+    });
+    card.appendChild(button);
+    wrap.appendChild(card);
+  }
+}
+
+function setStarterMode(open) {
+  starterMode = open;
+  for (const el of $$("#step-household, #step-meals, #step-proteins, .build-row", $("#planner"))) {
+    el.hidden = open;
+  }
+  planBuilt = false;
+  planLines = [];
+  $("#results").hidden = true;
+  $("#build-btn").textContent = "Build my order";
+  if (open) renderStarterOptions();
+}
 
 function metaFor(p) {
   const m = META[p.slug];
@@ -466,7 +539,7 @@ function renderResults(scroll = false) {
     }
 
     section.innerHTML = `<h3>${GROUP_LABELS[group]}</h3>` +
-      (covers ? `<p class="covers">${covers}</p>` : "");
+      (covers && !starterMode ? `<p class="covers">${covers}</p>` : "");
     for (const line of lines) section.appendChild(renderLine(line));
     if (addCandidates(group).length) {
       section.insertAdjacentHTML(
@@ -487,8 +560,9 @@ function renderResults(scroll = false) {
   }
 
   if (!planLines.length) {
-    wrap.innerHTML = `<div class="card"><p>Nothing on the list yet. Set a few
-      meals or eggs above and it fills in on its own.</p></div>`;
+    wrap.innerHTML = starterMode
+      ? '<div class="card"><p>Your list is empty. Choose a starter order above to fill it again.</p></div>'
+      : '<div class="card"><p>Nothing on the list yet. Set a few meals or eggs above and it fills in on its own.</p></div>';
   }
 
   renderTotal();
@@ -529,7 +603,8 @@ function renderLine(line) {
 function renderTotal() {
   const total = orderTotal();
   $("#order-total").textContent = `$${total.toFixed(2)}`;
-  renderMonthSummary();
+  $("#month-summary").hidden = starterMode;
+  if (!starterMode) renderMonthSummary();
   const fill = $("#meter-fill");
   fill.style.width = Math.min(100, (total / 250) * 100) + "%";
   fill.classList.toggle("meter__fill--under", total < 100);
@@ -774,6 +849,10 @@ function syncControls() {
 }
 
 function wire() {
+  const picker = $("#starter-picker");
+  picker.addEventListener("toggle", () => {
+    if (starterMode !== picker.open) setStarterMode(picker.open);
+  });
   $$(".stepper").forEach((st) => {
     const key = st.dataset.input;
     const min = Number(st.dataset.min), max = Number(st.dataset.max);
@@ -792,7 +871,10 @@ function wire() {
       state.zone = btn.dataset.zone;
       renderZones();
       persist();
-      if (planBuilt) refreshPlan();
+      if (planBuilt) {
+        if (starterMode) renderResults();
+        else refreshPlan();
+      }
     })
   );
 
@@ -862,8 +944,13 @@ function wire() {
 
 async function init() {
   restore();
+  const query = new URLSearchParams(location.search);
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const route = [query.get("zone"), hash.get("zone")].find(zone => zone === "buffalo" || zone === "rochester");
+  if (route) { state.zone = route; persist(); }
   const resp = await fetch(APP_BASE + "inventory.json", { cache: "no-cache" });
   const data = await resp.json();
+  inventoryUpdatedAt = Date.parse(data.scraped_at);
   inventory = {};
   for (const p of data.products) inventory[p.slug] = p;
   const dateEl = $("#inventory-date");
@@ -874,6 +961,9 @@ async function init() {
   }
   syncControls();
   wire();
+  const picker = $("#starter-picker");
+  picker.open = query.get("preset") === "starter" || picker.open;
+  setStarterMode(picker.open);
 }
 
 init().catch((err) => {

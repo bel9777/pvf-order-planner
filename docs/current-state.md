@@ -1,6 +1,17 @@
 # Current state — PVF Order Planner
 
-Updated: 2026-11-17 (scraper price fix, Claude)
+Updated: 2026-11-20
+
+## 2026-11-20: route links and starter shopping lists
+
+The embedded and standalone planner accept `?zone=buffalo` or
+`?zone=rochester`, with `#zone=` as a fallback. An explicit valid route wins
+over a saved choice. `?preset=starter` opens the two first-order lists.
+They use the same inventory, weights, prices and item controls as the monthly
+plan. A list pauses when an ingredient is unavailable, a price or weight is
+missing, the daily feed is stale, or the estimate falls below its threshold.
+No new products or fulfillment settings. Phone checks cover both markets,
+returning visitors, the cutoff shown next to checkout, and paused lists.
 
 ## 2026-11-17: prices were null for a week; scraper fixed
 

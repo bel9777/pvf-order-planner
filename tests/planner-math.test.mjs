@@ -14,6 +14,8 @@ globalThis.__test = {
   metaFor, rotationFor, makeLine, buildPlan, linePrice, orderTotal,
   renderMonthSummary, deliveryDateFor,
   setInventory(value) { inventory = value; },
+  STARTER_ORDERS, starterList,
+  setInventoryUpdatedAt(value) { inventoryUpdatedAt = value; },
   setPlanLines(value) { planLines = value; },
 };
 `;
@@ -41,6 +43,36 @@ const inventory = Object.fromEntries(inventoryData.products.map((p) => [p.slug, 
 planner.setInventory(inventory);
 
 const DINNER_GROUPS = ["chicken", "pork", "turkey", "lamb"];
+
+test("starter baskets quote only complete, priced lists that meet their delivery threshold", () => {
+  const sample = {
+    "chicken-whole-bird": [7.5, 4], "chicken-eggs": [8, null],
+    "pork-smoked-bacon": [19, 1], "pork-breakfast-sausage-links": [14.25, 0.8],
+  };
+  const products = Object.fromEntries(Object.entries(sample).map(([slug, [price, weight]]) =>
+    [slug, { slug, price, in_stock: true, price_unit: weight ? "lb" : "each", avg_weight_lb: weight }]
+  ));
+  const [small, large] = planner.STARTER_ORDERS;
+  planner.setInventory(products);
+  planner.setInventoryUpdatedAt(Date.now());
+  try {
+    assert.equal(planner.orderTotal(planner.starterList(small)), 117.8);
+    assert.equal(planner.orderTotal(planner.starterList(large)), 216.2);
+    products["chicken-eggs"].in_stock = false;
+    assert.equal(planner.starterList(small), null);
+    products["chicken-eggs"].in_stock = true;
+    products["chicken-whole-bird"].price = 6;
+    assert.ok(planner.starterList(small));
+    assert.equal(planner.starterList(large), null);
+    products["chicken-whole-bird"].price = null;
+    assert.equal(planner.starterList(small), null);
+    products["chicken-whole-bird"].price = 7.5;
+    planner.setInventoryUpdatedAt(Date.now() - 31 * 3600000);
+    assert.equal(planner.starterList(large), null);
+  } finally {
+    planner.setInventory(inventory);
+  }
+});
 
 function setState(values = {}) {
   Object.assign(planner.state, {

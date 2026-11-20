@@ -16,10 +16,11 @@
   mount.dataset.loaded = "1";
   document.body.classList.add("pvf-embedded"); // scope standalone-only styles off
 
-  if (!document.querySelector(`link[href="${BASE}style.css"]`)) {
+  const stylesheet = BASE + "style.css?v=20261120-starter";
+  if (!document.querySelector(`link[href="${stylesheet}"]`)) {
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = BASE + "style.css";
+    link.href = stylesheet;
     document.head.appendChild(link);
   }
 
@@ -41,7 +42,7 @@
     mount.appendChild(main);
 
     const script = document.createElement("script");
-    script.src = BASE + "app.js";
+    script.src = BASE + "app.js?v=20261120-starter";
     document.body.appendChild(script);
   } catch (e) {
     mount.innerHTML = `<p style="text-align:center;padding:24px;">
