@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-11-20T18:37:42Z",
+ "scraped_at": "2026-11-21T17:36:13Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -448,7 +448,7 @@
   },
   {
    "slug": "spatchcock-turkey",
-   "name": "Thanksgiving Turkey (Spatchcocked)",
+   "name": "Spatchcocked Turkey (Frozen)",
    "description": "Split, flattened, and frozen. Roasts in about half the time.",
    "category": "turkey",
    "price": 8.75,
@@ -457,18 +457,6 @@
    "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/0060b27d-d895-48ce-b096-225c75dfb1dc.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/spatchcock-turkey"
-  },
-  {
-   "slug": "whole-turkey",
-   "name": "Thanksgiving Turkey (Whole)",
-   "description": "A frozen whole bird for your Thanksgiving table.",
-   "category": "turkey",
-   "price": 8.25,
-   "price_unit": "lb",
-   "avg_weight_lb": 17.0,
-   "in_stock": true,
-   "image": "https://storage.googleapis.com/grazecart-images-prod/images/01a9bffd-2126-418a-a826-28436eb18779.jpg",
-   "url": "https://parkviewfamilyfarm.com/store/product/whole-turkey"
   },
   {
    "slug": "turkey-ground",
@@ -514,7 +502,7 @@
    "price": 3.25,
    "price_unit": "lb",
    "avg_weight_lb": 4.1,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/e13c4441-fb87-4475-828f-0ca4b9bd8932.png",
    "url": "https://parkviewfamilyfarm.com/store/product/turkey-stock-bag"
   },
@@ -541,6 +529,18 @@
    "in_stock": true,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/e36638c1-9a29-4a20-aad4-51fb002be0cc.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/turkey-wings"
+  },
+  {
+   "slug": "whole-turkey",
+   "name": "Whole Turkey (Frozen)",
+   "description": "A frozen whole bird for your holiday table.",
+   "category": "turkey",
+   "price": 8.25,
+   "price_unit": "lb",
+   "avg_weight_lb": 17.0,
+   "in_stock": true,
+   "image": "https://storage.googleapis.com/grazecart-images-prod/images/01a9bffd-2126-418a-a826-28436eb18779.jpg",
+   "url": "https://parkviewfamilyfarm.com/store/product/whole-turkey"
   },
   {
    "slug": "chicken-eggs",
