@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-11-21T17:36:13Z",
+ "scraped_at": "2026-11-22T17:51:44Z",
  "source": "https://parkviewfamilyfarm.com",
  "categories": [
   "chicken",
@@ -442,7 +442,7 @@
    "price": 12.0,
    "price_unit": "lb",
    "avg_weight_lb": 8.0,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/091bd123-13a3-4c1d-917e-1a57c7ff4055.jpg",
    "url": "https://parkviewfamilyfarm.com/store/product/bone-in-turkey-breast"
   },
@@ -550,7 +550,7 @@
    "price": 8.0,
    "price_unit": "each",
    "avg_weight_lb": null,
-   "in_stock": true,
+   "in_stock": false,
    "image": "https://storage.googleapis.com/grazecart-images-prod/images/d9a75b5b-0b8c-4024-83fb-05f65f9e1b8b.png",
    "url": "https://parkviewfamilyfarm.com/store/product/chicken-eggs"
   },
